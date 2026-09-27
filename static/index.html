@@ -1,0 +1,2567 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pequeno Rebanho | Painel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #f6f2e8;
+        --surface: #ffffff;
+        --surface-2: #fbf8f2;
+        --ink: #24211a;
+        --muted: #6f6a5a;
+        --muted-soft: #9a927d;
+        --primary: #3b6e5e;
+        --primary-dark: #24463a;
+        --primary-soft: #e3ede8;
+        --accent: #c98a2c;
+        --accent-soft: #f7e8cc;
+        --border: #e4dcc7;
+        --danger: #b3432b;
+        --danger-soft: #fbeae4;
+        --success: #3f7d5c;
+        --success-soft: #e7f2ea;
+        --shadow-sm: 0 2px 10px rgba(36, 33, 26, 0.06);
+        --shadow: 0 18px 36px -18px rgba(36, 33, 26, 0.3);
+        --radius-lg: 20px;
+        --radius-md: 14px;
+        --radius-sm: 10px;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: 'Inter', system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      h1, h2, h3, .brand span, .value, .ticket-day {
+        font-family: 'Fraunces', serif;
+      }
+
+      button, input, select, textarea { font-family: inherit; }
+
+      a { color: var(--primary); }
+
+      :focus-visible {
+        outline: 2.5px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .app {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        min-height: 100vh;
+      }
+
+      /* ---------- Sidebar ---------- */
+      .sidebar {
+        background: linear-gradient(185deg, var(--primary-dark) 0%, #1c3a30 100%);
+        color: #f2ece0;
+        padding: 22px 16px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 6px 8px 26px;
+      }
+
+      .brand-badge {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        background: rgba(242, 236, 224, 0.14);
+        border: 1px solid rgba(242, 236, 224, 0.3);
+        font-weight: 600;
+        font-size: 1.05rem;
+        flex-shrink: 0;
+      }
+
+      .brand span {
+        font-weight: 600;
+        font-size: 1.08rem;
+        line-height: 1.2;
+      }
+
+      nav {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+      }
+
+      .nav-btn {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        background: transparent;
+        border: none;
+        color: rgba(242, 236, 224, 0.8);
+        text-align: left;
+        padding: 11px 12px;
+        border-radius: 11px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.93rem;
+        transition: background 0.15s ease, color 0.15s ease;
+      }
+
+      .nav-btn svg { flex-shrink: 0; opacity: 0.9; }
+
+      .nav-btn:hover { background: rgba(242, 236, 224, 0.09); color: #fff; }
+
+      .nav-btn.active {
+        background: rgba(242, 236, 224, 0.16);
+        color: #fff;
+      }
+
+      .nav-divider {
+        height: 1px;
+        background: rgba(242, 236, 224, 0.14);
+        margin: 10px 4px;
+      }
+
+      #logoutBtn { color: rgba(242, 236, 224, 0.65); }
+      #logoutBtn:hover { background: rgba(179, 67, 43, 0.28); color: #fbe6de; }
+
+      /* ---------- Mobile nav chrome ---------- */
+      .menu-toggle {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+
+      .scrim {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(24, 22, 16, 0.4);
+        z-index: 40;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+
+      .scrim.show { opacity: 1; }
+
+      /* ---------- Main ---------- */
+      .main { padding: 26px 30px 60px; min-width: 0; }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 16px 20px;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+
+      .title h2 { margin: 0; font-size: 1.5rem; font-weight: 600; }
+      .title small { color: var(--muted); display: block; margin-top: 2px; }
+
+      .profile { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), #5c9683);
+        color: #fbf7ef;
+        font-weight: 700;
+        display: grid;
+        place-items: center;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+      }
+
+      #userName { font-weight: 600; font-size: 0.92rem; }
+      #userRole { font-size: 0.8rem; }
+
+      .content { margin-top: 22px; }
+
+      /* ---------- Stat strip ---------- */
+      .stat-strip {
+        display: flex;
+        flex-wrap: wrap;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        background: var(--surface);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .stat {
+        flex: 1 1 160px;
+        padding: 20px 22px;
+        border-right: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .stat:last-child { border-right: none; }
+
+      .stat .label { color: var(--muted); font-size: 0.85rem; margin-bottom: 8px; }
+      .stat .value { font-size: 2rem; font-weight: 600; line-height: 1; }
+
+      @media (max-width: 640px) {
+        .stat { border-right: none; flex: 1 1 45%; }
+      }
+
+      /* ---------- Panels & cards ---------- */
+      .panel {
+        margin-top: 20px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 22px;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .panel-sub { margin-top: 18px; }
+
+      .team-assign-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(18, 18, 16, 0.52);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 90;
+        padding: 24px;
+        animation: modalFadeIn 0.2s ease-out;
+      }
+
+      .team-assign-card {
+        width: min(100%, 980px);
+        background: #f5f0e7;
+        border: 1px solid rgba(59, 110, 94, 0.4);
+        border-radius: 24px;
+        padding: 26px 28px 22px;
+        box-shadow: 0 22px 50px rgba(25, 32, 28, 0.22);
+        position: relative;
+        animation: modalScaleIn 0.22s ease-out;
+      }
+
+      @keyframes modalFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      @keyframes modalScaleIn {
+        from {
+          opacity: 0;
+          transform: scale(0.96) translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      .team-assign-close {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        width: 38px;
+        height: 38px;
+        border: 1px solid var(--border);
+        border-radius: 50%;
+        background: rgba(255,255,255,0.3);
+        color: var(--ink);
+        font-size: 1.3rem;
+        cursor: pointer;
+      }
+
+      .team-assign-header {
+        margin-bottom: 18px;
+      }
+
+      .team-assign-header h3 {
+        margin: 0;
+        font-size: clamp(1.3rem, 2vw, 2rem);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+      }
+
+      .team-assign-header p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .team-assign-form {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .team-assign-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .team-assign-grid .field {
+        gap: 10px;
+      }
+
+      .team-assign-grid .field span {
+        font-size: 0.9rem;
+      }
+
+      .team-assign-grid .field select {
+        min-height: 52px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 14px;
+        font-size: 1rem;
+      }
+
+      .team-assign-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 2px;
+      }
+
+      .team-assign-actions .btn-success {
+        min-width: 220px;
+        min-height: 48px;
+        font-size: 1rem;
+        border-radius: 14px;
+        box-shadow: 0 8px 18px rgba(59,110,94,0.18);
+      }
+
+      .panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+      }
+
+      .panel-header h3 { margin: 0; font-size: 1.15rem; font-weight: 600; }
+      .panel-header p { margin: 4px 0 0; color: var(--muted); font-size: 0.86rem; }
+
+      .card {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 16px 18px;
+      }
+
+      .card + .card { margin-top: 10px; }
+
+      .card .muted { font-size: 0.86rem; }
+
+      /* ---------- "Minha escala" ticket ---------- */
+      .ticket {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        background: linear-gradient(150deg, var(--primary-dark), var(--primary));
+        color: #fbf7ef;
+        box-shadow: var(--shadow);
+      }
+
+      .ticket-date {
+        padding: 26px 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        border-right: 2px dashed rgba(251, 247, 239, 0.28);
+        min-width: 130px;
+      }
+
+      .ticket-date .weekday { font-size: 0.78rem; text-transform: lowercase; letter-spacing: 0.02em; opacity: 0.82; }
+      .ticket-day { font-size: 2.6rem; font-weight: 600; line-height: 1; margin: 4px 0; }
+      .ticket-date .month { font-size: 0.85rem; opacity: 0.9; }
+
+      .ticket-body { padding: 24px 26px; display: flex; flex-direction: column; gap: 14px; }
+
+      .ticket-badge {
+        align-self: flex-start;
+        background: var(--accent);
+        color: #2c1e05;
+        font-weight: 700;
+        font-size: 0.78rem;
+        padding: 5px 12px;
+        border-radius: 999px;
+      }
+
+      .ticket-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 14px 22px;
+      }
+
+      .ticket-grid div span { display: block; font-size: 0.76rem; opacity: 0.78; margin-bottom: 3px; }
+      .ticket-grid div strong { font-size: 1rem; font-weight: 600; }
+
+      @media (max-width: 560px) {
+        .ticket { grid-template-columns: 1fr; }
+        .ticket-date { border-right: none; border-bottom: 2px dashed rgba(251, 247, 239, 0.28); flex-direction: row; gap: 10px; padding: 16px 20px; }
+        .ticket-day { margin: 0; }
+      }
+
+      /* ---------- Empty state ---------- */
+      .empty-state {
+        text-align: center;
+        padding: 34px 18px;
+      }
+
+      .empty-state strong {
+        display: block;
+        font-family: 'Fraunces', serif;
+        font-size: 1.05rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+
+      .empty-state p { color: var(--muted); margin: 0 0 14px; font-size: 0.9rem; }
+
+      /* ---------- Tables ---------- */
+      table { width: 100%; border-collapse: collapse; }
+
+      th {
+        text-align: left;
+        padding: 10px 12px;
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 600;
+        border-bottom: 2px solid var(--border);
+      }
+
+      td {
+        text-align: left;
+        padding: 13px 12px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+      }
+
+      tbody tr:last-child td { border-bottom: none; }
+      tbody tr:hover { background: var(--surface-2); }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 0.74rem;
+      }
+
+      .chip.on { background: var(--success-soft); color: var(--success); }
+      .chip.off { background: #efe8d8; color: var(--muted); }
+
+      .muted { color: var(--muted); }
+
+      .sala-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 18px;
+        margin-top: 14px;
+      }
+
+      .sala-card {
+        background: #f7f3ec;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px 18px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        min-height: 170px;
+      }
+
+      .sala-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .sala-card-header h4 {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--ink);
+      }
+
+      .sala-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 64px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(59, 110, 94, 0.12);
+        color: var(--primary-dark);
+        font-size: 0.78rem;
+        font-weight: 700;
+      }
+
+      .sala-meta {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        padding-top: 2px;
+      }
+
+      .sala-meta div {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .meta-label {
+        font-size: 0.72rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-weight: 700;
+      }
+
+      .sala-meta strong {
+        font-size: 0.96rem;
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .equipe-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 18px;
+        margin-top: 14px;
+      }
+
+      .equipe-card {
+        background: #f7f3ec;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        min-height: 170px;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      }
+
+      .equipe-card:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 16px rgba(39, 51, 43, 0.08);
+        border-color: rgba(59, 110, 94, 0.6);
+      }
+
+      .equipe-card-new {
+        border: 1.5px dashed rgba(59, 110, 94, 0.65);
+        background: rgba(59, 110, 94, 0.05);
+        cursor: pointer;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        transition: transform 0.15s ease, background 0.15s ease;
+      }
+
+      .equipe-card-new:hover {
+        transform: translateY(-1px);
+        background: rgba(59, 110, 94, 0.08);
+      }
+
+      .equipe-card-new .card-plus {
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(59, 110, 94, 0.14);
+        color: var(--primary-dark);
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 10px;
+      }
+
+      .equipe-card-new strong {
+        display: block;
+        font-size: 1.08rem;
+        font-weight: 700;
+      }
+
+      .equipe-card-new span {
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .equipe-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .equipe-card-header h4 {
+        margin: 0;
+        font-size: 1.08rem;
+        font-weight: 700;
+        color: var(--ink);
+      }
+
+      .equipe-room {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 90px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: rgba(59, 110, 94, 0.12);
+        color: var(--primary-dark);
+        font-size: 0.76rem;
+        font-weight: 700;
+      }
+
+      .equipe-members {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        min-height: 40px;
+      }
+
+      .equipe-card-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: auto;
+      }
+
+      .actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+      .member-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 6px 5px 10px;
+        border-radius: 999px;
+        background: var(--primary-soft);
+        color: var(--primary-dark);
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin: 2px 4px 2px 0;
+      }
+
+      .member-chip button {
+        border: none;
+        background: rgba(36, 70, 58, 0.14);
+        color: inherit;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        cursor: pointer;
+        line-height: 1;
+        font-size: 0.72rem;
+      }
+
+      /* ---------- Buttons ---------- */
+      .btn, .btn-danger, .btn-success {
+        border: none;
+        border-radius: var(--radius-sm);
+        padding: 10px 14px;
+        font-weight: 700;
+        font-size: 0.88rem;
+        cursor: pointer;
+        transition: background 0.15s ease, transform 0.05s ease, opacity 0.15s ease;
+      }
+
+      .btn { background: #efe8d8; color: #3a3527; }
+      .btn:hover { background: #e5dcc4; }
+
+      .btn-success { background: var(--primary); color: #fbf7ef; }
+      .btn-success:hover { background: var(--primary-dark); }
+
+      .btn-danger { background: var(--danger-soft); color: var(--danger); }
+      .btn-danger:hover { background: #f6d9cf; }
+
+      .btn:active, .btn-success:active, .btn-danger:active { transform: translateY(1px); }
+      button[disabled] { opacity: 0.55; cursor: not-allowed; }
+
+      /* ---------- Forms ---------- */
+      form.hidden { display: none !important; }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 16px 18px;
+        padding: 18px;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        margin-bottom: 18px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        font-weight: 600;
+        font-size: 0.86rem;
+        color: var(--ink);
+      }
+
+      .field .hint { font-weight: 400; color: var(--muted-soft); font-size: 0.78rem; }
+
+      .field input,
+      .field select,
+      .field textarea {
+        width: 100%;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 10px 12px;
+        font-size: 0.94rem;
+        background: #fffdf9;
+        color: var(--ink);
+      }
+
+      .field input:focus-visible,
+      .field select:focus-visible,
+      .field textarea:focus-visible {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(59, 110, 94, 0.13);
+      }
+
+      .field textarea { min-height: 80px; resize: vertical; }
+
+      .form-wrap { margin-bottom: 4px; }
+
+      .panel-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: -6px;
+        margin-bottom: 18px;
+      }
+
+      .config-summary { margin-top: 14px; }
+
+      .hidden { display: none !important; }
+
+      .section { display: none; }
+      .section.active { display: block; }
+
+      /* ---------- Toasts ---------- */
+      .toast-region {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 90;
+        max-width: min(90vw, 340px);
+      }
+
+      .toast {
+        background: var(--ink);
+        color: #fbf7ef;
+        padding: 13px 14px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        box-shadow: var(--shadow);
+        font-size: 0.87rem;
+        font-weight: 500;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+      }
+
+      .toast.show { opacity: 1; transform: translateY(0); }
+      .toast.success { background: var(--success); }
+      .toast.error { background: var(--danger); }
+
+      .toast-close {
+        border: none;
+        background: transparent;
+        color: inherit;
+        font-size: 1rem;
+        cursor: pointer;
+        line-height: 1;
+        opacity: 0.8;
+        padding: 0 2px;
+      }
+
+      /* ---------- Confirm dialog ---------- */
+      dialog::backdrop { background: rgba(24, 22, 16, 0.45); }
+
+      .confirm-dialog {
+        border: none;
+        border-radius: 18px;
+        padding: 0;
+        max-width: 380px;
+        width: 90vw;
+        box-shadow: var(--shadow);
+      }
+
+      .confirm-body { padding: 24px; margin: 0; }
+      .confirm-body h3 { margin: 0 0 8px; font-size: 1.1rem; }
+      .confirm-body p { margin: 0; color: var(--muted); font-size: 0.92rem; line-height: 1.5; }
+      .confirm-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+      /* ---------- Responsive: table -> cards ---------- */
+      @media (max-width: 760px) {
+        table, thead, tbody, tr, td, th { display: block; width: 100%; }
+        thead { display: none; }
+
+        tbody tr {
+          background: var(--surface);
+          border: 1px solid var(--border);
+          border-radius: var(--radius-md);
+          margin-bottom: 12px;
+          padding: 4px 14px;
+        }
+
+        tbody td {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 12px;
+          padding: 10px 0;
+          border-bottom: 1px solid var(--border);
+          text-align: right;
+        }
+
+        tbody td:last-child { border-bottom: none; }
+
+        tbody td::before {
+          content: attr(data-label);
+          font-weight: 600;
+          color: var(--muted);
+          text-align: left;
+          flex-shrink: 0;
+        }
+
+        tbody td.actions { justify-content: flex-end; }
+        tbody td.actions::before { display: none; }
+      }
+
+      /* ---------- Responsive: layout ---------- */
+      @media (max-width: 880px) {
+        .app { grid-template-columns: 1fr; }
+
+        .menu-toggle { display: inline-flex; }
+
+        .sidebar {
+          position: fixed;
+          inset: 0 auto 0 0;
+          width: 260px;
+          transform: translateX(-100%);
+          transition: transform 0.25s ease;
+          z-index: 50;
+          overflow-y: auto;
+        }
+
+        .sidebar.open { transform: translateX(0); }
+
+        .scrim { display: block; }
+        .scrim.show { pointer-events: auto; }
+        .scrim:not(.show) { pointer-events: none; }
+
+        .main { padding: 18px 16px 50px; }
+
+        .profile > div:not(.avatar) { display: none; }
+
+        .topbar {
+          padding: 14px 16px;
+          align-items: flex-start;
+        }
+
+        .topbar-left {
+          gap: 10px;
+          width: 100%;
+        }
+
+        .title h2 { font-size: 1.3rem; }
+
+        .panel {
+          padding: 18px 16px;
+        }
+
+        .panel-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .stat-strip {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .sala-grid,
+        .equipe-grid {
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+
+        .sala-card,
+        .equipe-card {
+          min-height: unset;
+          padding: 12px 12px 10px;
+          gap: 10px;
+        }
+
+        .sala-card-header,
+        .equipe-card-header {
+          gap: 8px;
+        }
+
+        .sala-card-header h4,
+        .equipe-card-header h4 {
+          font-size: 0.97rem;
+        }
+
+        .sala-meta {
+          gap: 8px;
+        }
+
+        .sala-meta strong {
+          font-size: 0.86rem;
+        }
+
+        .equipe-members {
+          gap: 6px;
+          min-height: 28px;
+        }
+
+        .member-chip {
+          padding: 4px 6px 4px 8px;
+          font-size: 0.72rem;
+        }
+
+        .equipe-room,
+        .sala-badge {
+          min-width: 58px;
+          padding: 5px 8px;
+          font-size: 0.7rem;
+        }
+
+        .team-assign-card {
+          width: min(100%, 600px);
+          padding: 20px 18px 18px;
+        }
+
+        .team-assign-grid {
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+
+        .team-assign-actions {
+          justify-content: stretch;
+        }
+
+        .team-assign-actions .btn-success {
+          width: 100%;
+          min-width: unset;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .main { padding: 14px 12px 40px; }
+
+        .brand {
+          padding-bottom: 18px;
+        }
+
+        .nav-btn {
+          padding: 10px 10px;
+          font-size: 0.88rem;
+        }
+
+        .topbar {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 12px;
+        }
+
+        .profile {
+          justify-content: flex-end;
+        }
+
+        .stat-strip {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .stat .value {
+          font-size: 1.4rem;
+        }
+
+        .ticket {
+          grid-template-columns: 1fr;
+        }
+
+        .ticket-date {
+          border-right: none;
+          border-bottom: 2px dashed rgba(251, 247, 239, 0.28);
+          min-width: 0;
+          padding: 16px 18px;
+        }
+
+        .ticket-body {
+          padding: 18px 18px 20px;
+        }
+
+        .btn, .btn-danger, .btn-success {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .actions {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .equipe-card-actions {
+          justify-content: stretch;
+        }
+
+        .equipe-card-actions .btn-danger {
+          width: 100%;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * { transition: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <div class="scrim" id="scrim"></div>
+
+      <aside class="sidebar" id="sidebar">
+        <div class="brand">
+          <div class="brand-badge">PR</div>
+          <span>Pequeno<br />Rebanho</span>
+        </div>
+
+        <nav>
+          <button class="nav-btn active" data-section="dashboard">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+            <span>Painel</span>
+          </button>
+          <button class="nav-btn" data-section="salas">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="1.5"/><circle cx="14.5" cy="12" r="1"/></svg>
+            <span>Salas</span>
+          </button>
+          <button class="nav-btn" data-section="professores">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.9 3.1-6.2 7-6.2s7 2.3 7 6.2"/></svg>
+            <span>Professores</span>
+          </button>
+          <button class="nav-btn" data-section="equipes">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><circle cx="16.3" cy="9.4" r="2.4"/><path d="M3.5 19c0-3.3 2.6-5.3 5.5-5.3s5.5 2 5.5 5.3"/><path d="M14.6 14.2c2.4.2 4.4 2 4.4 4.8"/></svg>
+            <span>Equipes</span>
+          </button>
+          <button class="nav-btn" data-section="escalas">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 3v4M16 3v4"/></svg>
+            <span>Escalas</span>
+          </button>
+          <div class="nav-divider"></div>
+          <button class="nav-btn" data-section="meuPerfil">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3.5l1.9 4 4.4.6-3.2 3 .8 4.4L12 13.4 8.1 15.5l.8-4.4-3.2-3 4.4-.6z"/></svg>
+            <span id="meuPerfilNavLabel">Minha escala</span>
+          </button>
+          <button class="nav-btn" id="logoutBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a1 1 0 01-1-1V4a1 1 0 011-1h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+            <span>Sair</span>
+          </button>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-left">
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+            </button>
+            <div class="title">
+              <h2 id="pageTitle">Painel</h2>
+              <small id="pageSubtitle">Resumo do sistema</small>
+            </div>
+          </div>
+          <div class="profile">
+            <div class="avatar" id="userInitials">PR</div>
+            <div>
+              <div id="userName">Carregando…</div>
+              <div class="muted" id="userRole">…</div>
+            </div>
+          </div>
+        </header>
+
+        <div class="content">
+          <section id="dashboard" class="section active">
+            <div class="stat-strip">
+              <div class="stat">
+                <div class="label">Salas</div>
+                <div class="value" id="totalSalas">0</div>
+              </div>
+              <div class="stat">
+                <div class="label">Professores</div>
+                <div class="value" id="totalProfessores">0</div>
+              </div>
+              <div class="stat">
+                <div class="label">Equipes</div>
+                <div class="value" id="totalEquipes">0</div>
+              </div>
+              <div class="stat">
+                <div class="label">Escalas cadastradas</div>
+                <div class="value" id="totalEscalas">0</div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>Próximos domingos</h3>
+                  <p>Quem está escalado a partir de hoje, em todas as salas.</p>
+                </div>
+              </div>
+              <div id="dashboardEscalas"></div>
+            </div>
+          </section>
+
+          <section id="salas" class="section">
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>Salas</h3>
+                  <p>Cada sala tem seu próprio livro e sequência de lições.</p>
+                </div>
+                <button class="btn-success" id="newSalaBtn">+ Nova sala</button>
+              </div>
+              <form id="salaForm" class="hidden form-wrap">
+                <div class="form-grid">
+                  <label class="field">
+                    <span>Nome da sala</span>
+                    <input name="nome" placeholder="Ex.: Berçário" required />
+                  </label>
+                  <label class="field">
+                    <span>Livro</span>
+                    <input name="livro_nome" placeholder="Ex.: Águas Vivas" required />
+                  </label>
+                  <label class="field">
+                    <span>Lição inicial</span>
+                    <input name="licao_inicial" type="number" min="1" required />
+                  </label>
+                  <label class="field">
+                    <span>Lição final</span>
+                    <input name="licao_limit" type="number" min="1" required />
+                  </label>
+                  <label class="field">
+                    <span>Lição atual</span>
+                    <input name="licao_atual" type="number" min="1" required />
+                  </label>
+                </div>
+                <div class="panel-actions">
+                  <button type="button" class="btn" id="cancelSalaBtn">Cancelar</button>
+                  <button type="submit" class="btn-success">Salvar sala</button>
+                </div>
+              </form>
+              <div id="salasTable"></div>
+            </div>
+          </section>
+
+          <section id="professores" class="section">
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>Professores</h3>
+                  <p>Cadastre quem ensina, em qual sala e equipe.</p>
+                </div>
+                <button class="btn-success" id="newProfessorBtn">+ Novo professor</button>
+              </div>
+              <form id="professorForm" class="hidden form-wrap">
+                <div class="form-grid">
+                  <label class="field">
+                    <span>Nome</span>
+                    <input name="nome" required />
+                  </label>
+                  <label class="field">
+                    <span>E-mail</span>
+                    <input name="email" type="email" required />
+                  </label>
+                  <label class="field">
+                    <span>Telefone</span>
+                    <input name="telefone" placeholder="Opcional" />
+                  </label>
+                  <label class="field">
+                    <span>Sala</span>
+                    <select name="sala_id" required></select>
+                  </label>
+                  <label class="field">
+                    <span>Equipe</span>
+                    <select name="equipe_id">
+                      <option value="">Sem equipe</option>
+                    </select>
+                  </label>
+                  <label class="field">
+                    <span>Status</span>
+                    <select name="ativo">
+                      <option value="true">Ativo</option>
+                      <option value="false">Inativo</option>
+                    </select>
+                  </label>
+                  <label class="field" data-password-field>
+                    <span>Senha</span>
+                    <input name="password" type="password" placeholder="Senha" />
+                    <span class="hint" data-password-hint></span>
+                  </label>
+                </div>
+                <div class="panel-actions">
+                  <button type="button" class="btn" id="cancelProfessorBtn">Cancelar</button>
+                  <button type="submit" class="btn-success">Salvar professor</button>
+                </div>
+              </form>
+              <div id="professoresTable"></div>
+            </div>
+          </section>
+
+          <section id="equipes" class="section">
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>Equipes</h3>
+                  <p>Agrupe professores que revezam juntos em uma sala.</p>
+                </div>
+                <button class="btn-success" id="newEquipeBtn">+ Nova equipe</button>
+              </div>
+              <form id="equipeForm" class="hidden form-wrap">
+                <div class="form-grid">
+                  <label class="field">
+                    <span>Nome da equipe</span>
+                    <input name="nome" required />
+                  </label>
+                  <label class="field">
+                    <span>Sala</span>
+                    <select name="sala_id" required></select>
+                  </label>
+                </div>
+                <div class="panel-actions">
+                  <button type="button" class="btn" id="cancelEquipeBtn">Cancelar</button>
+                  <button type="submit" class="btn-success">Salvar equipe</button>
+                </div>
+              </form>
+              <div id="equipesTable"></div>
+
+              <div id="equipeMembroPanel" class="team-assign-overlay hidden" aria-hidden="true">
+                <div class="team-assign-card" role="dialog" aria-modal="true" aria-labelledby="equipeMembroTitle">
+                  <button type="button" class="team-assign-close" id="closeEquipeMembroPanel" aria-label="Fechar">×</button>
+                  <div class="team-assign-header">
+                    <h3 id="equipeMembroTitle">Adicionar professor a uma equipe</h3>
+                    <p id="equipeMembroSubtitle">O professor precisa pertencer à mesma sala da equipe.</p>
+                  </div>
+                  <form id="equipeMembroForm" class="team-assign-form">
+                    <div class="team-assign-grid">
+                      <label class="field">
+                        <span>Equipe</span>
+                        <select name="equipe_id_membro" required></select>
+                      </label>
+                      <label class="field">
+                        <span>Professor</span>
+                        <select name="professor_id_membro" required></select>
+                      </label>
+                    </div>
+                    <div class="team-assign-actions">
+                      <button type="submit" class="btn-success">Adicionar à equipe</button>
+                    </div>
+                  </form>
+                  <div id="equipeMembroStatus"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="escalas" class="section">
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>Escalas</h3>
+                  <p>Planejamento semanal: quem ensina, onde e qual lição.</p>
+                </div>
+                <button class="btn-success" id="newEscalaBtn">+ Nova escala</button>
+              </div>
+              <form id="escalaForm" class="hidden form-wrap">
+                <div class="form-grid">
+                  <label class="field">
+                    <span>Data do domingo</span>
+                    <input name="data_domingo" type="date" required />
+                  </label>
+                  <label class="field">
+                    <span>Semana</span>
+                    <input name="semana_numero" type="number" min="1" placeholder="Opcional" />
+                  </label>
+                  <label class="field">
+                    <span>Sala</span>
+                    <select name="sala_id" required></select>
+                  </label>
+                  <label class="field">
+                    <span>Equipe</span>
+                    <select name="equipe_id" required></select>
+                  </label>
+                  <label class="field">
+                    <span>Número da lição</span>
+                    <input name="numero_licao" type="number" min="1" required />
+                  </label>
+                  <label class="field">
+                    <span>Observação</span>
+                    <textarea name="observacao" placeholder="Opcional"></textarea>
+                  </label>
+                </div>
+                <div class="panel-actions">
+                  <button type="button" class="btn" id="cancelEscalaBtn">Cancelar</button>
+                  <button type="submit" class="btn-success">Salvar escala</button>
+                </div>
+              </form>
+
+              <div class="panel panel-sub">
+                <div class="panel-header">
+                  <div>
+                    <h3>Gerar escala do mês</h3>
+                    <p>Cria automaticamente uma escala para cada domingo do mês atual, revezando as equipes da sala.</p>
+                  </div>
+                </div>
+                <form id="gerarEscalaMensalForm">
+                  <div class="form-grid">
+                    <label class="field">
+                      <span>Mês</span>
+                      <select name="mes" required></select>
+                    </label>
+                    <label class="field">
+                      <span>Sala</span>
+                      <select name="sala_id_mensal" required></select>
+                    </label>
+                  </div>
+                  <div class="panel-actions">
+                    <button type="submit" class="btn-success">Gerar escala do mês</button>
+                  </div>
+                </form>
+                <div class="config-summary" id="gerarEscalaMensalStatus"></div>
+              </div>
+
+              <div id="escalasTable" class="panel-sub"></div>
+            </div>
+          </section>
+
+          <section id="meuPerfil" class="section">
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3 id="meuPerfilTitle">Minha próxima escala</h3>
+                  <p>O compromisso mais próximo para você no ministério infantil.</p>
+                </div>
+              </div>
+              <div id="minhaEscalaCard"></div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+
+    <dialog id="confirmDialog" class="confirm-dialog">
+      <form method="dialog" class="confirm-body">
+        <h3 id="confirmTitle">Confirmar ação</h3>
+        <p id="confirmMessage"></p>
+        <div class="confirm-actions">
+          <button type="button" class="btn" id="confirmCancel">Cancelar</button>
+          <button type="submit" class="btn-danger" id="confirmOk">Confirmar</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script>
+      function clearSessionAndRedirect() {
+        localStorage.clear();
+        window.location.href = '/login';
+      }
+
+      function hasValidToken(tokenValue) {
+        if (!tokenValue || typeof tokenValue !== 'string') return false;
+        const parts = tokenValue.split('.');
+        return parts.length === 3 && parts.every((part) => part.length > 0);
+      }
+
+      const token = localStorage.getItem('token');
+      const storedUser = JSON.parse(localStorage.getItem('usuario') || '{}');
+      let editingSalaId = null;
+      let editingProfessorId = null;
+
+      if (!token || !hasValidToken(token)) {
+        clearSessionAndRedirect();
+      }
+
+      const isAdmin = ['ADM', 'ADMIN'].includes(String(storedUser.tipo_usuario || '').toUpperCase());
+
+      /* ---------------------------------------------------------------- */
+      /* Utilidades de UI: toasts, confirmação, formatação                 */
+      /* ---------------------------------------------------------------- */
+
+      function showToast(msg, type = 'success', timeout = 4200) {
+        const region = document.getElementById('toastRegion');
+        const el = document.createElement('div');
+        el.className = `toast ${type}`;
+        el.innerHTML = `<span></span><button type="button" class="toast-close" aria-label="Fechar aviso">×</button>`;
+        el.querySelector('span').textContent = msg;
+        region.appendChild(el);
+        requestAnimationFrame(() => el.classList.add('show'));
+
+        const remove = () => {
+          el.classList.remove('show');
+          setTimeout(() => el.remove(), 200);
+        };
+        const timer = setTimeout(remove, timeout);
+        el.querySelector('.toast-close').addEventListener('click', () => {
+          clearTimeout(timer);
+          remove();
+        });
+      }
+
+      function confirmAction(message, { confirmText = 'Excluir' } = {}) {
+        return new Promise((resolve) => {
+          const dialog = document.getElementById('confirmDialog');
+          document.getElementById('confirmMessage').textContent = message;
+          const okBtn = document.getElementById('confirmOk');
+          const cancelBtn = document.getElementById('confirmCancel');
+          okBtn.textContent = confirmText;
+
+          function cleanup(result) {
+            dialog.close();
+            okBtn.removeEventListener('click', onOk);
+            cancelBtn.removeEventListener('click', onCancel);
+            dialog.removeEventListener('cancel', onCancel);
+            resolve(result);
+          }
+          function onOk(event) { event.preventDefault(); cleanup(true); }
+          function onCancel(event) { if (event) event.preventDefault(); cleanup(false); }
+
+          okBtn.addEventListener('click', onOk);
+          cancelBtn.addEventListener('click', onCancel);
+          dialog.addEventListener('cancel', onCancel);
+          dialog.showModal();
+        });
+      }
+
+      function formatDateBR(iso) {
+        if (!iso) return '';
+        try {
+          const date = new Date(`${iso}T00:00:00`);
+          const formatted = new Intl.DateTimeFormat('pt-BR', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }).format(date);
+          return formatted.replace('.', '').replace(/^(\w)/, (c) => c.toUpperCase());
+        } catch (error) {
+          return iso;
+        }
+      }
+
+      function daysUntilLabel(iso) {
+        if (!iso) return '';
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const target = new Date(`${iso}T00:00:00`);
+        const diff = Math.round((target - today) / 86400000);
+        if (diff < 0) return 'Data já passou';
+        if (diff === 0) return 'É hoje';
+        if (diff === 1) return 'Amanhã';
+        if (diff <= 7) return `Em ${diff} dias`;
+        return `Em ${Math.round(diff / 7)} semanas`;
+      }
+
+      /* ---------------------------------------------------------------- */
+      /* Navegação                                                         */
+      /* ---------------------------------------------------------------- */
+
+      const sections = {
+        dashboard: document.getElementById('dashboard'),
+        salas: document.getElementById('salas'),
+        professores: document.getElementById('professores'),
+        equipes: document.getElementById('equipes'),
+        escalas: document.getElementById('escalas'),
+        meuPerfil: document.getElementById('meuPerfil')
+      };
+
+      const titleMap = {
+        dashboard: ['Painel', 'Resumo do sistema'],
+        salas: ['Salas', 'Gestão das salas'],
+        professores: ['Professores', 'Lista e cadastro de professores'],
+        equipes: ['Equipes', 'Agrupamento por sala'],
+        escalas: ['Escalas', 'Planejamento semanal e mensal'],
+        meuPerfil: ['Minha escala', 'Seu próximo compromisso']
+      };
+
+      document.getElementById('userName').textContent = storedUser.nome || 'Usuário';
+      document.getElementById('userRole').textContent = isAdmin ? 'Administrador' : 'Professor(a)';
+      document.getElementById('userInitials').textContent = (storedUser.nome || 'U').split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase();
+
+      const sidebarEl = document.getElementById('sidebar');
+      const scrimEl = document.getElementById('scrim');
+      const menuToggle = document.getElementById('menuToggle');
+
+      let defaultSection = 'dashboard';
+
+      if (!isAdmin) {
+        ['dashboard', 'salas', 'professores', 'equipes', 'escalas'].forEach((key) => {
+          const btn = document.querySelector(`[data-section="${key}"]`);
+          if (btn) btn.style.display = 'none';
+        });
+        document.getElementById('meuPerfilNavLabel').textContent = 'Minha escala';
+        document.getElementById('meuPerfilTitle').textContent = 'Minha próxima escala';
+        defaultSection = 'meuPerfil';
+      }
+
+      function activateSection(section) {
+        Object.entries(sections).forEach(([key, el]) => el && el.classList.toggle('active', key === section));
+        document.querySelectorAll('.nav-btn').forEach((nav) => nav.classList.toggle('active', nav.dataset.section === section));
+        if (titleMap[section]) {
+          document.getElementById('pageTitle').textContent = titleMap[section][0];
+          document.getElementById('pageSubtitle').textContent = titleMap[section][1];
+        }
+        if (typeof closeSidebar === 'function') {
+          closeSidebar();
+        }
+      }
+
+      activateSection(defaultSection);
+
+      document.querySelectorAll('.nav-btn').forEach((button) => {
+        button.addEventListener('click', function () {
+          if (this.id === 'logoutBtn') {
+            localStorage.clear();
+            window.location.href = '/login';
+            return;
+          }
+          activateSection(this.dataset.section);
+        });
+      });
+
+      /* ---------------------------------------------------------------- */
+      /* Menu mobile (off-canvas)                                          */
+      /* ---------------------------------------------------------------- */
+
+      function openSidebar() {
+        if (!sidebarEl || !scrimEl || !menuToggle) return;
+        sidebarEl.classList.add('open');
+        scrimEl.classList.add('show');
+        menuToggle.setAttribute('aria-expanded', 'true');
+      }
+      function closeSidebar() {
+        if (!sidebarEl || !scrimEl || !menuToggle) return;
+        sidebarEl.classList.remove('open');
+        scrimEl.classList.remove('show');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      }
+      if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+          sidebarEl.classList.contains('open') ? closeSidebar() : openSidebar();
+        });
+      }
+      if (scrimEl) {
+        scrimEl.addEventListener('click', closeSidebar);
+      }
+
+      /* ---------------------------------------------------------------- */
+      /* API                                                               */
+      /* ---------------------------------------------------------------- */
+
+      async function apiFetch(url, options = {}) {
+        const response = await fetch(url, {
+          ...options,
+          headers: {
+            ...(options.headers || {}),
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const contentType = response.headers.get('content-type') || '';
+        const body = contentType.includes('application/json') ? await response.json() : await response.text();
+
+        if (!response.ok) {
+          const message = typeof body === 'string' ? body : (body.detail || 'Erro na requisição.');
+          if (response.status === 401) {
+            clearSessionAndRedirect();
+          }
+          throw new Error(message);
+        }
+
+        return body;
+      }
+
+      function emptyState(title, description, ctaId, ctaLabel) {
+        return `
+          <div class="empty-state">
+            <strong>${title}</strong>
+            <p>${description}</p>
+            ${ctaId ? `<button type="button" class="btn-success" data-empty-cta="${ctaId}">${ctaLabel}</button>` : ''}
+          </div>
+        `;
+      }
+
+      function bindEmptyCta(container) {
+        container.querySelectorAll('[data-empty-cta]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const target = document.getElementById(btn.dataset.emptyCta);
+            if (target) target.click();
+          });
+        });
+      }
+
+      /* ---------------------------------------------------------------- */
+      /* Dashboard                                                         */
+      /* ---------------------------------------------------------------- */
+
+      async function loadDashboard() {
+        if (!isAdmin) return;
+        try {
+          const [salas, professores, equipes, escalas] = await Promise.all([
+            apiFetch('/salas'),
+            apiFetch('/professores'),
+            apiFetch('/equipes'),
+            apiFetch('/escalas')
+          ]);
+
+          const equipeMap = Object.fromEntries(equipes.map((equipe) => [equipe.id, equipe]));
+          const salaMap = Object.fromEntries(salas.map((sala) => [sala.id, sala]));
+          const professorMap = Object.fromEntries(professores.map((prof) => [prof.id, prof]));
+
+          document.getElementById('totalSalas').textContent = salas.length;
+          document.getElementById('totalProfessores').textContent = professores.length;
+          document.getElementById('totalEquipes').textContent = equipes.length;
+          document.getElementById('totalEscalas').textContent = escalas.length;
+
+          const hoje = new Date();
+          hoje.setHours(0, 0, 0, 0);
+          const futuras = escalas
+            .filter((item) => new Date(`${item.data_domingo}T00:00:00`) >= hoje)
+            .slice(0, 5);
+
+          const container = document.getElementById('dashboardEscalas');
+          if (!futuras.length) {
+            container.innerHTML = emptyState(
+              'Nenhum domingo à frente na escala',
+              'Cadastre uma escala ou gere o mês inteiro na aba Escalas.',
+              'newEscalaBtnLink',
+              'Ir para Escalas'
+            );
+            return;
+          }
+
+          const membrosPorEquipe = {};
+          await Promise.all(
+            [...new Set(futuras.map((item) => item.equipe_id).filter(Boolean))].map(async (equipeId) => {
+              membrosPorEquipe[equipeId] = await apiFetch(`/equipes/${equipeId}/membros`);
+            })
+          );
+
+          container.innerHTML = futuras.map((item) => {
+            const equipe = equipeMap[item.equipe_id] || null;
+            const sala = salaMap[item.sala_id];
+            const membros = equipe ? (membrosPorEquipe[equipe.id] || []) : [];
+            const responsaveis = membros.length
+              ? membros.map((m) => professorMap[m.professor_id]?.nome || 'Professor').join(' e ')
+              : 'Sem responsável definido';
+
+            return `
+              <div class="card">
+                <div><strong>${formatDateBR(item.data_domingo)}</strong> · <span class="muted">${daysUntilLabel(item.data_domingo)}</span></div>
+                <div class="muted">Sala: ${sala?.nome || item.sala_id} · Lição ${item.numero_licao}</div>
+                <div class="muted">Equipe: ${equipe?.nome || 'Equipe'} — ${responsaveis}</div>
+              </div>
+            `;
+          }).join('');
+        } catch (error) {
+          document.getElementById('dashboardEscalas').innerHTML = `<p class="muted">${error.message}</p>`;
+        }
+      }
+
+      document.addEventListener('click', (event) => {
+        if (event.target.closest('[data-empty-cta="newEscalaBtnLink"]')) {
+          activateSection('escalas');
+        }
+      });
+
+      /* ---------------------------------------------------------------- */
+      /* Salas                                                             */
+      /* ---------------------------------------------------------------- */
+
+      function setSalaFormMode(isEditing) {
+        const form = document.getElementById('salaForm');
+        const submitButton = form.querySelector('button[type="submit"]');
+        if (!form || !submitButton) return;
+        submitButton.textContent = isEditing ? 'Salvar alterações' : 'Salvar sala';
+      }
+
+      function openSalaFormForEdit(sala) {
+        editingSalaId = sala.id;
+        const form = document.getElementById('salaForm');
+        if (!form) return;
+
+        setSalaFormMode(true);
+        form.classList.remove('hidden');
+        const fieldMap = {
+          nome: sala.nome,
+          livro_nome: sala.livro_nome,
+          licao_inicial: sala.licao_inicial,
+          licao_limit: sala.licao_limit,
+          licao_atual: sala.licao_atual
+        };
+
+        Object.entries(fieldMap).forEach(([name, value]) => {
+          const input = form.querySelector(`[name="${name}"]`);
+          if (input) input.value = value ?? '';
+        });
+
+        form.querySelector('[name="nome"]').focus();
+      }
+
+      async function loadSalas() {
+        try {
+          const salas = await apiFetch('/salas');
+          const table = document.getElementById('salasTable');
+          table.innerHTML = salas.length
+            ? `
+              <div class="sala-grid">
+                ${salas.map((sala) => `
+                  <article class="sala-card">
+                    <div class="sala-card-header">
+                      <h4>${sala.nome}</h4>
+                      <span class="sala-badge">${sala.licao_atual}/${sala.licao_limit}</span>
+                    </div>
+
+                    <div class="sala-meta">
+                      <div>
+                        <span class="meta-label">Livro</span>
+                        <strong>${sala.livro_nome}</strong>
+                      </div>
+                      <div>
+                        <span class="meta-label">Lição</span>
+                        <strong>${sala.licao_atual}/${sala.licao_limit}</strong>
+                      </div>
+                    </div>
+
+                    <div class="actions">
+                      <button class="btn" data-edit-sala="${sala.id}">Editar</button>
+                      <button class="btn-danger" data-delete-sala="${sala.id}">Excluir</button>
+                    </div>
+                  </article>
+                `).join('')}
+              </div>
+            `
+            : emptyState('Nenhuma sala cadastrada', 'Crie a primeira sala para começar a organizar o ministério.', 'newSalaBtn', 'Criar sala');
+
+          bindEmptyCta(table);
+
+          table.querySelectorAll('[data-edit-sala]').forEach((button) => {
+            button.addEventListener('click', () => {
+              const sala = salas.find((item) => String(item.id) === String(button.dataset.editSala));
+              if (sala) openSalaFormForEdit(sala);
+            });
+          });
+
+          table.querySelectorAll('[data-delete-sala]').forEach((button) => {
+            button.addEventListener('click', async () => {
+              const ok = await confirmAction('Excluir esta sala? Professores e equipes vinculados podem ser afetados.');
+              if (!ok) return;
+              try {
+                await apiFetch(`/salas/${button.dataset.deleteSala}`, { method: 'DELETE' });
+                showToast('Sala excluída.', 'success');
+                loadSalas();
+                loadDashboard();
+              } catch (error) {
+                showToast(error.message, 'error');
+              }
+            });
+          });
+        } catch (error) {
+          document.getElementById('salasTable').innerHTML = `<p class="muted">${error.message}</p>`;
+        }
+      }
+
+      document.getElementById('newSalaBtn').addEventListener('click', () => {
+        editingSalaId = null;
+        const form = document.getElementById('salaForm');
+        form.reset();
+        setSalaFormMode(false);
+        form.classList.remove('hidden');
+        form.querySelector('[name="nome"]').focus();
+      });
+
+      document.getElementById('cancelSalaBtn').addEventListener('click', () => {
+        editingSalaId = null;
+        const form = document.getElementById('salaForm');
+        form.reset();
+        setSalaFormMode(false);
+        form.classList.add('hidden');
+      });
+
+      document.getElementById('salaForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = Object.fromEntries(new FormData(event.target).entries());
+        const submitButton = event.target.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+
+        try {
+          const payload = {
+            nome: formData.nome,
+            livro_nome: formData.livro_nome,
+            licao_inicial: Number(formData.licao_inicial),
+            licao_limit: Number(formData.licao_limit),
+            licao_atual: Number(formData.licao_atual)
+          };
+
+          if (editingSalaId) {
+            await apiFetch(`/salas/${editingSalaId}`, { method: 'PUT', body: JSON.stringify(payload) });
+            showToast('Sala atualizada com sucesso.', 'success');
+          } else {
+            await apiFetch('/salas', { method: 'POST', body: JSON.stringify(payload) });
+            showToast('Sala criada com sucesso.', 'success');
+          }
+
+          event.target.reset();
+          event.target.classList.add('hidden');
+          editingSalaId = null;
+          setSalaFormMode(false);
+          loadSalas();
+          loadDashboard();
+          populateSelects();
+        } catch (error) {
+          showToast(error.message, 'error');
+        } finally {
+          submitButton.disabled = false;
+        }
+      });
+
+      /* ---------------------------------------------------------------- */
+      /* Professores                                                       */
+      /* ---------------------------------------------------------------- */
+
+      async function getProfessorEquipeIds(professorId) {
+        const equipes = await apiFetch('/equipes');
+        const ids = [];
+        for (const equipe of equipes) {
+          const membros = await apiFetch(`/equipes/${equipe.id}/membros`);
+          if (membros.some((membro) => Number(membro.professor_id) === Number(professorId))) {
+            ids.push(equipe.id);
+          }
+        }
+        return ids;
+      }
+
+      function setProfessorFormMode(isEditing) {
+        const form = document.getElementById('professorForm');
+        const submitButton = form.querySelector('button[type="submit"]');
+        const passwordField = form.querySelector('[data-password-field]');
+        if (!form || !submitButton) return;
+
+        submitButton.textContent = isEditing ? 'Salvar alterações' : 'Salvar professor';
+        if (passwordField) {
+          const passwordInput = passwordField.querySelector('input');
+          const hint = passwordField.querySelector('[data-password-hint]');
+          if (isEditing) {
+            passwordInput.required = false;
+            passwordInput.placeholder = 'Deixe em branco para manter';
+            if (hint) hint.textContent = 'Preencha só se quiser trocar a senha atual.';
+          } else {
+            passwordInput.required = true;
+            passwordInput.placeholder = 'Senha';
+            if (hint) hint.textContent = '';
+          }
+        }
+      }
+
+      function openProfessorFormForEdit(professor) {
+        editingProfessorId = professor.id;
+        const form = document.getElementById('professorForm');
+        if (!form) return;
+
+        setProfessorFormMode(true);
+        form.classList.remove('hidden');
+        form.querySelector('[name="nome"]').value = professor.nome || '';
+        form.querySelector('[name="email"]').value = professor.email || '';
+        form.querySelector('[name="telefone"]').value = professor.telefone || '';
+        form.querySelector('[name="sala_id"]').value = professor.sala_id || '';
+        form.querySelector('[name="ativo"]').value = String(Boolean(professor.ativo));
+        form.querySelector('[name="password"]').value = '';
+
+        const equipeSelect = form.querySelector('[name="equipe_id"]');
+        const equipes = window.allEquipes || [];
+        equipeSelect.innerHTML = '<option value="">Sem equipe</option>' + equipes.map((equipe) => `<option value="${equipe.id}">${equipe.nome}</option>`).join('');
+
+        getProfessorEquipeIds(professor.id).then((ids) => {
+          equipeSelect.value = ids.length ? String(ids[0]) : '';
+        }).catch(() => {
+          equipeSelect.value = '';
+        });
+
+        form.querySelector('[name="nome"]').focus();
+      }
+
+      async function loadProfessores() {
+        try {
+          const professores = await apiFetch('/professores');
+          const table = document.getElementById('professoresTable');
+          table.innerHTML = professores.length
+            ? `
+              <table>
+                <thead>
+                  <tr><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Status</th><th>Ações</th></tr>
+                </thead>
+                <tbody>
+                  ${professores.map((prof) => `
+                    <tr>
+                      <td data-label="Nome">${prof.nome}</td>
+                      <td data-label="E-mail">${prof.email}</td>
+                      <td data-label="Telefone">${prof.telefone || '—'}</td>
+                      <td data-label="Status"><span class="chip ${prof.ativo ? 'on' : 'off'}">${prof.ativo ? 'Ativo' : 'Inativo'}</span></td>
+                      <td data-label="Ações" class="actions">
+                        <button class="btn" data-edit-professor="${prof.id}">Editar</button>
+                        <button class="btn-success" data-toggle-professor="${prof.id}" data-active="${prof.ativo}">${prof.ativo ? 'Inativar' : 'Ativar'}</button>
+                        <button class="btn-danger" data-delete-professor="${prof.id}">Excluir</button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            `
+            : emptyState('Nenhum professor cadastrado', 'Cadastre o primeiro professor para começar a montar as equipes.', 'newProfessorBtn', 'Cadastrar professor');
+
+          bindEmptyCta(table);
+
+          table.querySelectorAll('[data-edit-professor]').forEach((button) => {
+            button.addEventListener('click', () => {
+              const professor = professores.find((item) => String(item.id) === String(button.dataset.editProfessor));
+              if (professor) openProfessorFormForEdit(professor);
+            });
+          });
+
+          table.querySelectorAll('[data-toggle-professor]').forEach((button) => {
+            button.addEventListener('click', async () => {
+              const id = button.dataset.toggleProfessor;
+              const active = button.dataset.active === 'true';
+              try {
+                await apiFetch(`/professores/${id}/${active ? 'inativar' : 'ativar'}`, { method: 'PATCH' });
+                showToast(active ? 'Professor inativado.' : 'Professor ativado.', 'success');
+                loadProfessores();
+              } catch (error) {
+                showToast(error.message, 'error');
+              }
+            });
+          });
+
+          table.querySelectorAll('[data-delete-professor]').forEach((button) => {
+            button.addEventListener('click', async () => {
+              const ok = await confirmAction('Excluir este professor? Ele também será removido de qualquer equipe.');
+              if (!ok) return;
+              try {
+                await apiFetch(`/professores/${button.dataset.deleteProfessor}`, { method: 'DELETE' });
+                showToast('Professor excluído.', 'success');
+                loadProfessores();
+                loadDashboard();
+              } catch (error) {
+                showToast(error.message, 'error');
+              }
+            });
+          });
+        } catch (error) {
+          document.getElementById('professoresTable').innerHTML = `<p class="muted">${error.message}</p>`;
+        }
+      }
+
+      document.getElementById('newProfessorBtn').addEventListener('click', () => {
+        editingProfessorId = null;
+        const form = document.getElementById('professorForm');
+        form.reset();
+        setProfessorFormMode(false);
+        form.classList.remove('hidden');
+        form.querySelector('[name="nome"]').focus();
+      });
+
+      document.getElementById('cancelProfessorBtn').addEventListener('click', () => {
+        editingProfessorId = null;
+        const form = document.getElementById('professorForm');
+        form.reset();
+        setProfessorFormMode(false);
+        form.classList.add('hidden');
+      });
+
+      async function syncProfessorEquipeAssignment(professorId, selectedEquipeId) {
+        const equipes = await apiFetch('/equipes');
+        const professorEquipes = [];
+
+        for (const equipe of equipes) {
+          const membros = await apiFetch(`/equipes/${equipe.id}/membros`);
+          if (membros.some((membro) => Number(membro.professor_id) === Number(professorId))) {
+            professorEquipes.push(equipe.id);
+          }
+        }
+
+        const targetEquipeId = selectedEquipeId ? Number(selectedEquipeId) : null;
+
+        for (const equipeId of professorEquipes) {
+          if (targetEquipeId !== null && Number(equipeId) === targetEquipeId) continue;
+          await apiFetch(`/equipes/${equipeId}/membros/${professorId}`, { method: 'DELETE' });
+        }
+
+        if (targetEquipeId !== null && !professorEquipes.includes(targetEquipeId)) {
+          await apiFetch(`/equipes/${targetEquipeId}/membros`, {
+            method: 'POST',
+            body: JSON.stringify({ professor_id: Number(professorId) })
+          });
+        }
+      }
+
+      document.getElementById('professorForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = Object.fromEntries(new FormData(event.target).entries());
+        const submitButton = event.target.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+
+        const payload = {
+          nome: formData.nome,
+          email: formData.email,
+          telefone: formData.telefone || null,
+          sala_id: Number(formData.sala_id),
+          ativo: formData.ativo === 'true'
+        };
+
+        try {
+          if (!editingProfessorId) {
+            payload.tipo_usuario = 'PROFESSOR';
+            payload.password = formData.password;
+            await apiFetch('/professores', { method: 'POST', body: JSON.stringify(payload) });
+            showToast('Professor cadastrado com sucesso.', 'success');
+          } else {
+            const professorPayload = { ...payload };
+            if (formData.password && formData.password.trim()) {
+              professorPayload.password = formData.password;
+            }
+
+            await apiFetch(`/professores/${editingProfessorId}`, { method: 'PUT', body: JSON.stringify(professorPayload) });
+            await syncProfessorEquipeAssignment(editingProfessorId, formData.equipe_id || null);
+            showToast('Professor atualizado com sucesso.', 'success');
+          }
+
+          event.target.reset();
+          event.target.classList.add('hidden');
+          editingProfessorId = null;
+          setProfessorFormMode(false);
+          loadProfessores();
+          loadDashboard();
+          populateSelects();
+        } catch (error) {
+          showToast(error.message, 'error');
+        } finally {
+          submitButton.disabled = false;
+        }
+      });
+
+      /* ---------------------------------------------------------------- */
+      /* Equipes                                                           */
+      /* ---------------------------------------------------------------- */
+
+      function openEquipeForm() {
+        const form = document.getElementById('equipeForm');
+        if (!form) return;
+        form.classList.remove('hidden');
+        const input = form.querySelector('[name="nome"]');
+        if (input) input.focus();
+      }
+
+      document.getElementById('newEquipeBtn').addEventListener('click', openEquipeForm);
+      document.getElementById('cancelEquipeBtn').addEventListener('click', () => document.getElementById('equipeForm').classList.add('hidden'));
+      document.getElementById('closeEquipeMembroPanel').addEventListener('click', closeEquipeAssignmentPanel);
+
+      document.getElementById('equipeMembroPanel').addEventListener('click', (event) => {
+        if (event.target === event.currentTarget) closeEquipeAssignmentPanel();
+      });
+
+      document.getElementById('equipeForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = Object.fromEntries(new FormData(event.target).entries());
+        const submitButton = event.target.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+
+        try {
+          await apiFetch('/equipes', { method: 'POST', body: JSON.stringify({ nome: formData.nome, sala_id: Number(formData.sala_id) }) });
+          showToast('Equipe criada com sucesso.', 'success');
+          event.target.reset();
+          event.target.classList.add('hidden');
+          loadEquipes();
+          populateSelects();
+        } catch (error) {
+          showToast(error.message, 'error');
+        } finally {
+          submitButton.disabled = false;
+        }
+      });
+
+      function openEquipeAssignmentPanel(equipeId = null) {
+        const panel = document.getElementById('equipeMembroPanel');
+        if (!panel) return;
+        panel.classList.remove('hidden');
+        panel.setAttribute('aria-hidden', 'false');
+
+        const title = document.getElementById('equipeMembroTitle');
+        const subtitle = document.getElementById('equipeMembroSubtitle');
+        const equipeSelect = document.querySelector('select[name="equipe_id_membro"]');
+        const selectedEquipe = equipeId ? (window.allEquipes || []).find((equipe) => String(equipe.id) === String(equipeId)) : null;
+
+        if (title) {
+          title.textContent = selectedEquipe ? `Adicionar professor à equipe ${selectedEquipe.nome}` : 'Adicionar professor a uma equipe';
+        }
+
+        if (subtitle) {
+          subtitle.textContent = selectedEquipe
+            ? `O professor precisa pertencer à mesma sala da equipe ${selectedEquipe.nome}.`
+            : 'O professor precisa pertencer à mesma sala da equipe.';
+        }
+
+        if (equipeSelect) {
+          equipeSelect.value = equipeId ? String(equipeId) : '';
+        }
+      }
+
+      function closeEquipeAssignmentPanel() {
+        const panel = document.getElementById('equipeMembroPanel');
+        if (!panel) return;
+        panel.classList.add('hidden');
+        panel.setAttribute('aria-hidden', 'true');
+      }
+
+      function syncEquipeMembroFormState() {
+        const form = document.getElementById('equipeMembroForm');
+        if (!form) return;
+
+        const equipeSelect = form.querySelector('select[name="equipe_id_membro"]');
+        const professorSelect = form.querySelector('select[name="professor_id_membro"]');
+        const submitButton = form.querySelector('button[type="submit"]');
+        const hasEquipes = (window.allEquipes || []).length > 0;
+
+        if (!hasEquipes) {
+          equipeSelect.innerHTML = '<option value="">Cadastre uma equipe primeiro</option>';
+          professorSelect.innerHTML = '<option value="">Selecione</option>' + (window.allProfessores || []).map((prof) => `<option value="${prof.id}">${prof.nome}</option>`).join('');
+          form.style.display = 'none';
+          if (submitButton) submitButton.disabled = true;
+          return;
+        }
+
+        equipeSelect.innerHTML = '<option value="">Selecione</option>' + (window.allEquipes || []).map((equipe) => `<option value="${equipe.id}">${equipe.nome}</option>`).join('');
+        professorSelect.innerHTML = '<option value="">Selecione</option>' + (window.allProfessores || []).map((prof) => `<option value="${prof.id}">${prof.nome}</option>`).join('');
+        form.style.display = 'block';
+        if (submitButton) submitButton.disabled = false;
+      }
+
+      async function loadEquipes() {
+        try {
+          const [equipes, salas] = await Promise.all([apiFetch('/equipes'), apiFetch('/salas')]);
+          window.allEquipes = equipes;
+          const table = document.getElementById('equipesTable');
+
+          if (!equipes.length) {
+            table.innerHTML = `
+              <div class="equipe-grid">
+                <article class="equipe-card equipe-card-new" data-new-equipe-card>
+                  <div class="card-plus">+</div>
+                  <strong>Nova equipe</strong>
+                  <span>Cadastre uma equipe para organizar o revezamento.</span>
+                </article>
+              </div>
+            `;
+            table.querySelector('[data-new-equipe-card]')?.addEventListener('click', openEquipeForm);
+            syncEquipeMembroFormState();
+            return;
+          }
+
+          const cards = await Promise.all(equipes.map(async (equipe) => {
+            const membros = await apiFetch(`/equipes/${equipe.id}/membros`);
+            const chips = membros.length
+              ? membros.map((membro) => `
+                  <span class="member-chip">
+                    ${membro.usuarios?.nome || 'Professor'}
+                    <button type="button" data-remove-membro="${membro.professor_id}" data-equipe-id="${equipe.id}" aria-label="Remover ${membro.usuarios?.nome || 'professor'} da equipe">×</button>
+                  </span>
+                `).join('')
+              : '<span class="muted">Nenhum membro</span>';
+
+            return `
+              <article class="equipe-card" data-equipe-card="${equipe.id}">
+                <div class="equipe-card-header">
+                  <h4>${equipe.nome}</h4>
+                  <span class="equipe-room">${salas.find((s) => s.id === equipe.sala_id)?.nome || equipe.sala_id}</span>
+                </div>
+
+                <div class="equipe-members">${chips}</div>
+
+                <div class="equipe-card-actions">
+                  <button class="btn-danger" data-delete-equipe="${equipe.id}">Excluir</button>
+                </div>
+              </article>
+            `;
+          }));
+
+          table.innerHTML = `
+            <div class="equipe-grid">
+              <article class="equipe-card equipe-card-new" data-new-equipe-card>
+                <div class="card-plus">+</div>
+                <strong>Nova equipe</strong>
+                <span>Cadastre uma nova equipe</span>
+              </article>
+              ${cards.join('')}
+            </div>
+          `;
+
+          table.querySelector('[data-new-equipe-card]')?.addEventListener('click', openEquipeForm);
+
+          table.querySelectorAll('[data-equipe-card]').forEach((card) => {
+            card.addEventListener('click', (event) => {
+              if (event.target.closest('[data-delete-equipe]') || event.target.closest('[data-remove-membro]')) {
+                return;
+              }
+              openEquipeAssignmentPanel(card.dataset.equipeCard);
+            });
+          });
+
+          table.querySelectorAll('[data-delete-equipe]').forEach((button) => {
+            button.addEventListener('click', async () => {
+              const ok = await confirmAction('Excluir esta equipe? Os membros serão desvinculados dela.');
+              if (!ok) return;
+              try {
+                await apiFetch(`/equipes/${button.dataset.deleteEquipe}`, { method: 'DELETE' });
+                showToast('Equipe excluída.', 'success');
+                loadEquipes();
+                loadDashboard();
+              } catch (error) {
+                showToast(error.message, 'error');
+              }
+            });
+          });
+
+          table.querySelectorAll('[data-remove-membro]').forEach((button) => {
+            button.addEventListener('click', async () => {
+              const equipeId = button.dataset.equipeId;
+              const professorId = button.dataset.removeMembro;
+              const ok = await confirmAction('Remover este professor da equipe?');
+              if (!ok) return;
+              try {
+                await apiFetch(`/equipes/${equipeId}/membros/${professorId}`, { method: 'DELETE' });
+                showToast('Professor removido da equipe.', 'success');
+                loadEquipes();
+                loadEscalas();
+                loadDashboard();
+              } catch (error) {
+                showToast(error.message, 'error');
+              }
+            });
+          });
+
+          syncEquipeMembroFormState();
+        } catch (error) {
+          document.getElementById('equipesTable').innerHTML = `<p class="muted">${error.message}</p>`;
+        }
+      }
+
+      document.getElementById('equipeMembroForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = Object.fromEntries(new FormData(event.target).entries());
+        const statusBox = document.getElementById('equipeMembroStatus');
+        const submitButton = event.target.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+
+        try {
+          await apiFetch(`/equipes/${Number(formData.equipe_id_membro)}/membros`, {
+            method: 'POST',
+            body: JSON.stringify({ professor_id: Number(formData.professor_id_membro) })
+          });
+          statusBox.innerHTML = '';
+          showToast('Professor adicionado à equipe.', 'success');
+          event.target.reset();
+          loadEquipes();
+          loadDashboard();
+          loadEscalas();
+        } catch (error) {
+          showToast(error.message, 'error');
+        } finally {
+          submitButton.disabled = false;
+        }
+      });
+
+      /* ---------------------------------------------------------------- */
+      /* Escalas                                                           */
+      /* ---------------------------------------------------------------- */
+
+      document.getElementById('newEscalaBtn').addEventListener('click', () => document.getElementById('escalaForm').classList.toggle('hidden'));
+      document.getElementById('cancelEscalaBtn').addEventListener('click', () => document.getElementById('escalaForm').classList.add('hidden'));
+
+      document.getElementById('escalaForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = Object.fromEntries(new FormData(event.target).entries());
+        const submitButton = event.target.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+
+        try {
+          await apiFetch('/escalas', {
+            method: 'POST',
+            body: JSON.stringify({
+              data_domingo: formData.data_domingo,
+              semana_numero: formData.semana_numero ? Number(formData.semana_numero) : null,
+              sala_id: Number(formData.sala_id),
+              equipe_id: Number(formData.equipe_id),
+              numero_licao: Number(formData.numero_licao),
+              observacao: formData.observacao || null
+            })
+          });
+          showToast('Escala criada com sucesso.', 'success');
+          event.target.reset();
+          event.target.classList.add('hidden');
+          loadEscalas();
+          loadDashboard();
+        } catch (error) {
+          showToast(error.message, 'error');
+        } finally {
+          submitButton.disabled = false;
+        }
+      });
+
+      document.getElementById('gerarEscalaMensalForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = Object.fromEntries(new FormData(event.target).entries());
+        const statusBox = document.getElementById('gerarEscalaMensalStatus');
+        const submitButton = event.target.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+
+        const anoAtual = new Date().getFullYear();
+
+        try {
+          const result = await apiFetch('/escalas/gerar-mensal', {
+            method: 'POST',
+            body: JSON.stringify({ mes: Number(formData.mes), ano: anoAtual, sala_id: Number(formData.sala_id_mensal) })
+          });
+
+          statusBox.innerHTML = `<div class="card"><strong>${result.geradas} escala(s) geradas</strong><div class="muted">Referentes ao mês ${result.mes}/${result.ano}.</div></div>`;
+          showToast(`${result.geradas} escala(s) gerada(s) para ${result.mes}/${result.ano}.`, 'success');
+
+          event.target.reset();
+          populateMonthSelect();
+          loadEscalas();
+          loadDashboard();
+        } catch (error) {
+          statusBox.innerHTML = '';
+          showToast(error.message, 'error');
+        } finally {
+          submitButton.disabled = false;
+        }
+      });
+
+      async function loadEscalas() {
+        try {
+          const [escalas, salas, equipes, professores] = await Promise.all([
+            apiFetch('/escalas'),
+            apiFetch('/salas'),
+            apiFetch('/equipes'),
+            apiFetch('/professores')
+          ]);
+          const professorMap = Object.fromEntries(professores.map((prof) => [prof.id, prof]));
+          const table = document.getElementById('escalasTable');
+
+          if (!escalas.length) {
+            table.innerHTML = emptyState('Nenhuma escala cadastrada', 'Adicione uma escala manualmente ou gere o mês inteiro acima.', 'newEscalaBtn', 'Criar escala');
+            bindEmptyCta(table);
+            return;
+          }
+
+          const rows = await Promise.all(escalas.map(async (escala) => {
+            const equipe = equipes.find((e) => e.id === (escala.equipe_id || escala.dupla_id));
+            const membros = equipe ? await apiFetch(`/equipes/${equipe.id}/membros`) : [];
+            const responsaveis = membros.map((m) => professorMap[m.professor_id]?.nome || 'Professor').join(' e ') || 'Sem membros';
+            return `
+              <tr>
+                <td data-label="Domingo">${formatDateBR(escala.data_domingo)}</td>
+                <td data-label="Sala">${salas.find((s) => s.id === escala.sala_id)?.nome || escala.sala_id}</td>
+                <td data-label="Equipe">${equipe?.nome || escala.equipe_id || 'Equipe'} (${responsaveis})</td>
+                <td data-label="Lição">${escala.numero_licao}</td>
+                <td data-label="Ações" class="actions"><button class="btn-danger" data-delete-escala="${escala.id}">Excluir</button></td>
+              </tr>
+            `;
+          }));
+
+          table.innerHTML = `
+            <table>
+              <thead>
+                <tr><th>Domingo</th><th>Sala</th><th>Equipe</th><th>Lição</th><th>Ações</th></tr>
+              </thead>
+              <tbody>${rows.join('')}</tbody>
+            </table>
+          `;
+
+          table.querySelectorAll('[data-delete-escala]').forEach((button) => {
+            button.addEventListener('click', async () => {
+              const ok = await confirmAction('Excluir esta escala?');
+              if (!ok) return;
+              try {
+                await apiFetch(`/escalas/${button.dataset.deleteEscala}`, { method: 'DELETE' });
+                showToast('Escala excluída.', 'success');
+                loadEscalas();
+                loadDashboard();
+              } catch (error) {
+                showToast(error.message, 'error');
+              }
+            });
+          });
+        } catch (error) {
+          document.getElementById('escalasTable').innerHTML = `<p class="muted">${error.message}</p>`;
+        }
+      }
+
+      /* ---------------------------------------------------------------- */
+      /* Minha escala (professor)                                          */
+      /* ---------------------------------------------------------------- */
+
+      async function loadMinhaEscala() {
+        if (isAdmin) {
+          const content = document.getElementById('minhaEscalaCard');
+          if (content) {
+            content.innerHTML = '<div class="empty-state"><strong>Área do professor</strong><p>Esta visão é exibida somente para professores do ministério.</p></div>';
+          }
+          return;
+        }
+
+        const content = document.getElementById('minhaEscalaCard');
+        try {
+          const data = await apiFetch('/professor/minha-proxima-escala');
+
+          if (!data.data_domingo) {
+            content.innerHTML = emptyState('Nenhuma escala à frente', data.mensagem || 'Você não possui uma próxima escala cadastrada no momento.', null, '');
+            return;
+          }
+
+          const date = new Date(`${data.data_domingo}T00:00:00`);
+          const weekday = new Intl.DateTimeFormat('pt-BR', { weekday: 'short' }).format(date).replace('.', '');
+          const day = new Intl.DateTimeFormat('pt-BR', { day: '2-digit' }).format(date);
+          const month = new Intl.DateTimeFormat('pt-BR', { month: 'long' }).format(date);
+
+          content.innerHTML = `
+            <div class="ticket">
+              <div class="ticket-date">
+                <span class="weekday">${weekday}</span>
+                <span class="ticket-day">${day}</span>
+                <span class="month">${month}</span>
+              </div>
+              <div class="ticket-body">
+                <span class="ticket-badge">${daysUntilLabel(data.data_domingo)}</span>
+                <div class="ticket-grid">
+                  <div><span>Sala</span><strong>${data.sala || '—'}</strong></div>
+                  <div><span>Livro</span><strong>${data.livro || '—'}</strong></div>
+                  <div><span>Lição</span><strong>${data.numero_licao ?? '—'}</strong></div>
+                  <div><span>Equipe</span><strong>${data.equipe || '—'}</strong></div>
+                  <div><span>Com você</span><strong>${data.parceiro || 'Ninguém mais nesta equipe'}</strong></div>
+                </div>
+              </div>
+            </div>
+          `;
+        } catch (error) {
+          content.innerHTML = `<p class="muted">${error.message}</p>`;
+        }
+      }
+
+      /* ---------------------------------------------------------------- */
+      /* Seletores compartilhados                                          */
+      /* ---------------------------------------------------------------- */
+
+      function populateMonthSelect() {
+        const monthSelect = document.querySelector('select[name="mes"]');
+        if (!monthSelect) return;
+
+        const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        monthSelect.innerHTML = meses.map((nome, index) => `<option value="${index + 1}">${index + 1} - ${nome}</option>`).join('');
+        monthSelect.value = new Date().getMonth() + 1;
+      }
+
+      async function populateSelects() {
+        const [salas, professores, equipes] = await Promise.all([apiFetch('/salas'), apiFetch('/professores'), apiFetch('/equipes')]);
+        window.allProfessores = professores;
+        window.allEquipes = equipes;
+
+        document.querySelectorAll('select[name="sala_id"]').forEach((select) => {
+          select.innerHTML = '<option value="">Selecione</option>' + salas.map((sala) => `<option value="${sala.id}">${sala.nome}</option>`).join('');
+        });
+
+        const salaMensalSelect = document.querySelector('select[name="sala_id_mensal"]');
+        if (salaMensalSelect) {
+          salaMensalSelect.innerHTML = '<option value="">Selecione</option>' + salas.map((sala) => `<option value="${sala.id}">${sala.nome}</option>`).join('');
+        }
+
+        const equipeSelect = document.querySelector('#escalaForm select[name="equipe_id"]');
+        if (equipeSelect) {
+          equipeSelect.innerHTML = '<option value="">Selecione</option>' + equipes.map((equipe) => `<option value="${equipe.id}">${equipe.nome}</option>`).join('');
+        }
+
+        syncEquipeMembroFormState();
+
+        const professorSalaSelect = document.querySelector('#professorForm select[name="sala_id"]');
+        if (professorSalaSelect) {
+          professorSalaSelect.innerHTML = '<option value="">Selecione</option>' + salas.map((sala) => `<option value="${sala.id}">${sala.nome}</option>`).join('');
+        }
+
+        const equipeSalaSelect = document.querySelector('#equipeForm select[name="sala_id"]');
+        if (equipeSalaSelect) {
+          equipeSalaSelect.innerHTML = '<option value="">Selecione</option>' + salas.map((sala) => `<option value="${sala.id}">${sala.nome}</option>`).join('');
+        }
+
+        populateMonthSelect();
+      }
+
+      /* ---------------------------------------------------------------- */
+      /* Inicialização                                                     */
+      /* ---------------------------------------------------------------- */
+
+      async function init() {
+        if (isAdmin) {
+          await Promise.all([loadDashboard(), loadSalas(), loadProfessores(), loadEquipes(), loadEscalas(), populateSelects()]);
+        }
+        if (!isAdmin) {
+          await loadMinhaEscala();
+        }
+      }
+
+      init();
+    </script>
+  </body>
+</html>
