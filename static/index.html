@@ -6,44 +6,48 @@
     <title>Pequeno Rebanho | Painel</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Lora:wght@500;600;700&display=swap" rel="stylesheet" />
     <style>
       :root {
-        --bg: #f6f2e8;
+        --bg: #f4f2f7;
         --surface: #ffffff;
-        --surface-2: #fbf8f2;
-        --ink: #24211a;
-        --muted: #6f6a5a;
-        --muted-soft: #9a927d;
-        --primary: #3b6e5e;
-        --primary-dark: #24463a;
-        --primary-soft: #e3ede8;
-        --accent: #c98a2c;
-        --accent-soft: #f7e8cc;
-        --border: #e4dcc7;
+        --surface-2: #f8f7fa;
+        --ink: #251c32;
+        --muted: #706a79;
+        --muted-soft: #928b9b;
+        --primary: #3f7563;
+        --primary-dark: #2d5d4e;
+        --primary-soft: #e6f0ec;
+        --accent: #d89b43;
+        --accent-soft: #fbf0dc;
+        --border: #e5e1e9;
         --danger: #b3432b;
         --danger-soft: #fbeae4;
         --success: #3f7d5c;
         --success-soft: #e7f2ea;
-        --shadow-sm: 0 2px 10px rgba(36, 33, 26, 0.06);
-        --shadow: 0 18px 36px -18px rgba(36, 33, 26, 0.3);
-        --radius-lg: 20px;
-        --radius-md: 14px;
-        --radius-sm: 10px;
+        --shadow-sm: 0 2px 10px rgba(37, 28, 50, 0.05);
+        --shadow: 0 18px 36px -18px rgba(37, 28, 50, 0.24);
+        --radius-lg: 14px;
+        --radius-md: 10px;
+        --radius-sm: 8px;
       }
 
       * { box-sizing: border-box; }
 
       body {
         margin: 0;
-        font-family: 'Inter', system-ui, sans-serif;
-        background: var(--bg);
+        font-family: 'DM Sans', system-ui, sans-serif;
+        background:
+          linear-gradient(135deg, rgba(52, 35, 70, 0.025) 1px, transparent 1px),
+          linear-gradient(45deg, rgba(52, 35, 70, 0.018) 1px, transparent 1px),
+          var(--bg);
+        background-size: 28px 28px;
         color: var(--ink);
         -webkit-font-smoothing: antialiased;
       }
 
       h1, h2, h3, .brand span, .value, .ticket-day {
-        font-family: 'Fraunces', serif;
+        font-family: 'Lora', Georgia, serif;
       }
 
       button, input, select, textarea { font-family: inherit; }
@@ -1060,7 +1064,182 @@
       }
 
       @media (prefers-reduced-motion: reduce) {
-        * { transition: none !important; }
+        * { transition: none !important; animation: none !important; }
+      }
+
+      .sidebar {
+        background: linear-gradient(165deg, #1c102d 0%, #29173d 58%, #211331 100%);
+      }
+
+      .brand {
+        justify-content: center;
+        padding: 2px 0 20px;
+        margin-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .brand img {
+        display: block;
+        width: 112px;
+        aspect-ratio: 1;
+        object-fit: contain;
+        border-radius: 8px;
+      }
+
+      .nav-btn { border-radius: 8px; }
+
+      .nav-btn.active {
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: inset 3px 0 #e5b468;
+      }
+
+      .main { padding: 28px 32px 60px; }
+      .topbar { border-radius: 12px; }
+      .stat-strip, .panel { border-radius: 12px; }
+      .panel { border-color: var(--border); }
+      .form-grid { border-radius: 10px; background: var(--surface-2); }
+      .field input, .field select, .field textarea { min-height: 42px; background: #fff; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+      .field input:focus-visible, .field select:focus-visible, .field textarea:focus-visible { box-shadow: 0 0 0 3px rgba(63, 117, 99, 0.14); }
+      .btn, .btn-danger, .btn-success { min-height: 40px; }
+      .btn:focus-visible, .btn-success:focus-visible, .btn-danger:focus-visible { outline-color: var(--accent); }
+      .team-assign-card { background: var(--surface); border-color: var(--border); border-radius: 14px; }
+      .sala-card, .equipe-card { background: var(--surface-2); }
+      .ticket { background: linear-gradient(145deg, #29173d, #3b2852); }
+      .section.active { animation: section-enter 0.22s ease-out; }
+
+      @keyframes section-enter {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      @media (max-width: 880px) {
+        .main { padding: 18px 16px 50px; }
+      }
+
+      @media (max-width: 560px) {
+        .brand img { width: 96px; }
+        .main { padding: 14px 12px 40px; }
+      }
+
+      :root {
+        --muted: #4b5563;
+        --muted-soft: #4b5563;
+      }
+
+      [hidden] { display: none !important; }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 18px;
+        min-width: 0;
+      }
+
+      .page-actions { display: flex; align-items: center; gap: 8px; }
+      .page-actions .btn-success { width: auto; white-space: nowrap; }
+      .title small, .muted, .meta-label, th, .stat .label { color: #4b5563; }
+      #userName, .proper-name, #professorForm input[name="nome"], #salaForm input[name="nome"], #equipeForm input[name="nome"], .field select { text-transform: capitalize; }
+
+      .stat-strip {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        overflow: visible;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .stat {
+        display: flex;
+        min-width: 0;
+        min-height: 132px;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 17px 18px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .stat-heading { display: flex; align-items: center; gap: 10px; }
+      .stat-heading svg { width: 36px; height: 36px; flex: 0 0 36px; padding: 8px; border-radius: 9px; color: #4b3566; background: #f0ebf5; }
+      .stat:nth-child(2) .stat-heading svg { color: var(--primary-dark); background: var(--primary-soft); }
+      .stat:nth-child(3) .stat-heading svg { color: #8a5b16; background: var(--accent-soft); }
+      .stat:nth-child(4) .stat-heading svg { color: #3e536b; background: #eaf0f6; }
+      .stat .label { margin: 0; font-size: 0.86rem; font-weight: 600; }
+      .stat .value { font-size: 2.15rem; font-weight: 700; color: var(--ink); }
+
+      .chip.on { background: #dcfce7; color: #166534; }
+      .chip.off { background: #f3f4f6; color: #4b5563; }
+
+      .sala-grid, .equipe-grid { align-items: stretch; gap: 14px; }
+      .sala-card, .equipe-card { min-height: 188px; height: 100%; border-radius: 10px; padding: 17px; }
+      .sala-card .actions { margin-top: auto; }
+      .equipe-card-actions { margin-top: auto; }
+      .equipe-room { color: #315d4e; background: #e6f0ec; }
+
+      .action-cell { overflow: visible; }
+      .row-action-menu { position: relative; }
+      .row-action-menu summary {
+        display: grid;
+        width: 36px;
+        height: 36px;
+        place-items: center;
+        border-radius: 8px;
+        color: #4b5563;
+        cursor: pointer;
+        list-style: none;
+      }
+      .row-action-menu summary::-webkit-details-marker { display: none; }
+      .row-action-menu summary:hover, .row-action-menu[open] summary { background: #f1eef4; color: #352346; }
+      .row-action-menu summary svg { width: 18px; height: 18px; }
+      .row-action-options {
+        position: absolute;
+        top: calc(100% + 4px);
+        right: 0;
+        z-index: 20;
+        display: grid;
+        width: 156px;
+        padding: 5px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--surface);
+        box-shadow: 0 8px 24px rgba(37, 28, 50, 0.14);
+      }
+      .row-menu-item {
+        border: 0;
+        border-radius: 5px;
+        padding: 9px 10px;
+        background: transparent;
+        color: var(--ink);
+        text-align: left;
+        font: inherit;
+        cursor: pointer;
+      }
+      .row-menu-item:hover { background: var(--surface-2); }
+      .row-menu-item.danger { color: #b42318; }
+      .row-menu-item.danger:hover { background: #fef2f2; }
+
+      .panel { border-radius: 10px; }
+      .empty-state p { color: #4b5563; }
+
+      @media (max-width: 880px) {
+        .topbar-right { width: 100%; justify-content: flex-end; }
+        .stat-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
+
+      @media (max-width: 560px) {
+        .topbar-right { gap: 10px; }
+        .page-actions { min-width: 0; }
+        .page-actions .btn-success { max-width: 100%; padding-inline: 10px; font-size: 0.82rem; }
+        .stat { min-height: 116px; padding: 13px; }
+        .stat-heading { align-items: flex-start; gap: 8px; }
+        .stat-heading svg { width: 32px; height: 32px; flex-basis: 32px; padding: 7px; }
+        .stat .value { font-size: 1.8rem; }
       }
     </style>
   </head>
@@ -1070,8 +1249,7 @@
 
       <aside class="sidebar" id="sidebar">
         <div class="brand">
-          <div class="brand-badge">PR</div>
-          <span>Pequeno<br />Rebanho</span>
+          <img src="/static/logo-pequeno-rebanho.png" alt="Pequeno Rebanho" />
         </div>
 
         <nav>
@@ -1118,11 +1296,19 @@
               <small id="pageSubtitle">Resumo do sistema</small>
             </div>
           </div>
-          <div class="profile">
-            <div class="avatar" id="userInitials">PR</div>
-            <div>
-              <div id="userName">Carregando…</div>
-              <div class="muted" id="userRole">…</div>
+          <div class="topbar-right">
+            <div class="page-actions" id="pageActions">
+              <button class="btn-success" id="newSalaBtn" data-page-action="salas" hidden>+ Nova sala</button>
+              <button class="btn-success" id="newProfessorBtn" data-page-action="professores" hidden>+ Novo professor</button>
+              <button class="btn-success" id="newEquipeBtn" data-page-action="equipes" hidden>+ Nova equipe</button>
+              <button class="btn-success" id="newEscalaBtn" data-page-action="escalas" hidden>+ Nova escala</button>
+            </div>
+            <div class="profile">
+              <div class="avatar" id="userInitials">PR</div>
+              <div>
+                <div id="userName">Carregando…</div>
+                <div class="muted" id="userRole">…</div>
+              </div>
             </div>
           </div>
         </header>
@@ -1131,19 +1317,31 @@
           <section id="dashboard" class="section active">
             <div class="stat-strip">
               <div class="stat">
-                <div class="label">Salas</div>
+                <div class="stat-heading">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5V20M2.5 20h19M8 8h2m4 0h2m-8 4h2m4 0h2m-8 4h2m4 0h2"/></svg>
+                  <div class="label">Salas</div>
+                </div>
                 <div class="value" id="totalSalas">0</div>
               </div>
               <div class="stat">
-                <div class="label">Professores</div>
+                <div class="stat-heading">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.9 3.1-6.2 7-6.2s7 2.3 7 6.2"/></svg>
+                  <div class="label">Professores</div>
+                </div>
                 <div class="value" id="totalProfessores">0</div>
               </div>
               <div class="stat">
-                <div class="label">Equipes</div>
+                <div class="stat-heading">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><circle cx="16.3" cy="9.4" r="2.4"/><path d="M3.5 19c0-3.3 2.6-5.3 5.5-5.3s5.5 2 5.5 5.3M14.6 14.2c2.4.2 4.4 2 4.4 4.8"/></svg>
+                  <div class="label">Equipes</div>
+                </div>
                 <div class="value" id="totalEquipes">0</div>
               </div>
               <div class="stat">
-                <div class="label">Escalas cadastradas</div>
+                <div class="stat-heading">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4m8-4v4m-9 7 2 2 4-4"/></svg>
+                  <div class="label">Escalas cadastradas</div>
+                </div>
                 <div class="value" id="totalEscalas">0</div>
               </div>
             </div>
@@ -1161,13 +1359,6 @@
 
           <section id="salas" class="section">
             <div class="panel">
-              <div class="panel-header">
-                <div>
-                  <h3>Salas</h3>
-                  <p>Cada sala tem seu próprio livro e sequência de lições.</p>
-                </div>
-                <button class="btn-success" id="newSalaBtn">+ Nova sala</button>
-              </div>
               <form id="salaForm" class="hidden form-wrap">
                 <div class="form-grid">
                   <label class="field">
@@ -1202,13 +1393,6 @@
 
           <section id="professores" class="section">
             <div class="panel">
-              <div class="panel-header">
-                <div>
-                  <h3>Professores</h3>
-                  <p>Cadastre quem ensina, em qual sala e equipe.</p>
-                </div>
-                <button class="btn-success" id="newProfessorBtn">+ Novo professor</button>
-              </div>
               <form id="professorForm" class="hidden form-wrap">
                 <div class="form-grid">
                   <label class="field">
@@ -1257,13 +1441,6 @@
 
           <section id="equipes" class="section">
             <div class="panel">
-              <div class="panel-header">
-                <div>
-                  <h3>Equipes</h3>
-                  <p>Agrupe professores que revezam juntos em uma sala.</p>
-                </div>
-                <button class="btn-success" id="newEquipeBtn">+ Nova equipe</button>
-              </div>
               <form id="equipeForm" class="hidden form-wrap">
                 <div class="form-grid">
                   <label class="field">
@@ -1312,13 +1489,6 @@
 
           <section id="escalas" class="section">
             <div class="panel">
-              <div class="panel-header">
-                <div>
-                  <h3>Escalas</h3>
-                  <p>Planejamento semanal: quem ensina, onde e qual lição.</p>
-                </div>
-                <button class="btn-success" id="newEscalaBtn">+ Nova escala</button>
-              </div>
               <form id="escalaForm" class="hidden form-wrap">
                 <div class="form-grid">
                   <label class="field">
@@ -1383,12 +1553,6 @@
 
           <section id="meuPerfil" class="section">
             <div class="panel">
-              <div class="panel-header">
-                <div>
-                  <h3 id="meuPerfilTitle">Minha próxima escala</h3>
-                  <p>O compromisso mais próximo para você no ministério infantil.</p>
-                </div>
-              </div>
               <div id="minhaEscalaCard"></div>
             </div>
           </section>
@@ -1481,6 +1645,10 @@
         });
       }
 
+      function capitalizeWords(value) {
+        return String(value || '').replace(/(^|[\s-])(\p{L})/gu, (_, prefix, letter) => `${prefix}${letter.toLocaleUpperCase('pt-BR')}`);
+      }
+
       function formatDateBR(iso) {
         if (!iso) return '';
         try {
@@ -1520,12 +1688,14 @@
 
       const titleMap = {
         dashboard: ['Painel', 'Resumo do sistema'],
-        salas: ['Salas', 'Gestão das salas'],
-        professores: ['Professores', 'Lista e cadastro de professores'],
-        equipes: ['Equipes', 'Agrupamento por sala'],
-        escalas: ['Escalas', 'Planejamento semanal e mensal'],
-        meuPerfil: ['Minha escala', 'Seu próximo compromisso']
+        salas: ['Salas', 'Cada sala tem seu próprio livro e sequência de lições.'],
+        professores: ['Professores', 'Cadastre quem ensina, em qual sala e equipe.'],
+        equipes: ['Equipes', 'Organize os revezamentos por sala.'],
+        escalas: ['Escalas', 'Planeje escalas semanais e mensais.'],
+        meuPerfil: ['Minha escala', 'Seu próximo compromisso no ministério infantil.']
       };
+
+      const pageActionButtons = document.querySelectorAll('[data-page-action]');
 
       document.getElementById('userName').textContent = storedUser.nome || 'Usuário';
       document.getElementById('userRole').textContent = isAdmin ? 'Administrador' : 'Professor(a)';
@@ -1554,6 +1724,9 @@
           document.getElementById('pageTitle').textContent = titleMap[section][0];
           document.getElementById('pageSubtitle').textContent = titleMap[section][1];
         }
+        pageActionButtons.forEach((button) => {
+          button.hidden = button.dataset.pageAction !== section;
+        });
         if (typeof closeSidebar === 'function') {
           closeSidebar();
         }
@@ -1702,8 +1875,8 @@
             return `
               <div class="card">
                 <div><strong>${formatDateBR(item.data_domingo)}</strong> · <span class="muted">${daysUntilLabel(item.data_domingo)}</span></div>
-                <div class="muted">Sala: ${sala?.nome || item.sala_id} · Lição ${item.numero_licao}</div>
-                <div class="muted">Equipe: ${equipe?.nome || 'Equipe'} — ${responsaveis}</div>
+                <div class="muted">Sala: <span class="proper-name">${sala?.nome || item.sala_id}</span> · Lição ${item.numero_licao}</div>
+                <div class="muted">Equipe: <span class="proper-name">${equipe?.nome || 'Equipe'}</span> — <span class="proper-name">${responsaveis}</span></div>
               </div>
             `;
           }).join('');
@@ -1762,14 +1935,14 @@
                 ${salas.map((sala) => `
                   <article class="sala-card">
                     <div class="sala-card-header">
-                      <h4>${sala.nome}</h4>
+                      <h4 class="proper-name">${sala.nome}</h4>
                       <span class="sala-badge">${sala.licao_atual}/${sala.licao_limit}</span>
                     </div>
 
                     <div class="sala-meta">
                       <div>
                         <span class="meta-label">Livro</span>
-                        <strong>${sala.livro_nome}</strong>
+                        <strong class="proper-name">${sala.livro_nome}</strong>
                       </div>
                       <div>
                         <span class="meta-label">Lição</span>
@@ -1947,14 +2120,21 @@
                 <tbody>
                   ${professores.map((prof) => `
                     <tr>
-                      <td data-label="Nome">${prof.nome}</td>
+                      <td data-label="Nome" class="proper-name">${prof.nome}</td>
                       <td data-label="E-mail">${prof.email}</td>
                       <td data-label="Telefone">${prof.telefone || '—'}</td>
                       <td data-label="Status"><span class="chip ${prof.ativo ? 'on' : 'off'}">${prof.ativo ? 'Ativo' : 'Inativo'}</span></td>
-                      <td data-label="Ações" class="actions">
-                        <button class="btn" data-edit-professor="${prof.id}">Editar</button>
-                        <button class="btn-success" data-toggle-professor="${prof.id}" data-active="${prof.ativo}">${prof.ativo ? 'Inativar' : 'Ativar'}</button>
-                        <button class="btn-danger" data-delete-professor="${prof.id}">Excluir</button>
+                      <td data-label="Ações" class="actions action-cell">
+                        <details class="row-action-menu">
+                          <summary aria-label="Ações do professor">
+                            <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>
+                          </summary>
+                          <div class="row-action-options">
+                            <button type="button" class="row-menu-item" data-edit-professor="${prof.id}">Editar</button>
+                            <button type="button" class="row-menu-item" data-toggle-professor="${prof.id}" data-active="${prof.ativo}">${prof.ativo ? 'Inativar' : 'Ativar'}</button>
+                            <button type="button" class="row-menu-item danger" data-delete-professor="${prof.id}">Excluir</button>
+                          </div>
+                        </details>
                       </td>
                     </tr>
                   `).join('')}
@@ -1968,6 +2148,7 @@
           table.querySelectorAll('[data-edit-professor]').forEach((button) => {
             button.addEventListener('click', () => {
               const professor = professores.find((item) => String(item.id) === String(button.dataset.editProfessor));
+              button.closest('details')?.removeAttribute('open');
               if (professor) openProfessorFormForEdit(professor);
             });
           });
@@ -2145,12 +2326,12 @@
         const selectedEquipe = equipeId ? (window.allEquipes || []).find((equipe) => String(equipe.id) === String(equipeId)) : null;
 
         if (title) {
-          title.textContent = selectedEquipe ? `Adicionar professor à equipe ${selectedEquipe.nome}` : 'Adicionar professor a uma equipe';
+          title.textContent = selectedEquipe ? `Adicionar professor à equipe ${capitalizeWords(selectedEquipe.nome)}` : 'Adicionar professor a uma equipe';
         }
 
         if (subtitle) {
           subtitle.textContent = selectedEquipe
-            ? `O professor precisa pertencer à mesma sala da equipe ${selectedEquipe.nome}.`
+            ? `O professor precisa pertencer à mesma sala da equipe ${capitalizeWords(selectedEquipe.nome)}.`
             : 'O professor precisa pertencer à mesma sala da equipe.';
         }
 
@@ -2196,16 +2377,8 @@
           const table = document.getElementById('equipesTable');
 
           if (!equipes.length) {
-            table.innerHTML = `
-              <div class="equipe-grid">
-                <article class="equipe-card equipe-card-new" data-new-equipe-card>
-                  <div class="card-plus">+</div>
-                  <strong>Nova equipe</strong>
-                  <span>Cadastre uma equipe para organizar o revezamento.</span>
-                </article>
-              </div>
-            `;
-            table.querySelector('[data-new-equipe-card]')?.addEventListener('click', openEquipeForm);
+            table.innerHTML = emptyState('Nenhuma equipe cadastrada', 'Crie sua primeira equipe usando o botão no cabeçalho.', 'newEquipeBtn', 'Criar equipe');
+            bindEmptyCta(table);
             syncEquipeMembroFormState();
             return;
           }
@@ -2215,8 +2388,8 @@
             const chips = membros.length
               ? membros.map((membro) => `
                   <span class="member-chip">
-                    ${membro.usuarios?.nome || 'Professor'}
-                    <button type="button" data-remove-membro="${membro.professor_id}" data-equipe-id="${equipe.id}" aria-label="Remover ${membro.usuarios?.nome || 'professor'} da equipe">×</button>
+                    <span class="proper-name">${membro.usuarios?.nome || 'Professor'}</span>
+                    <button type="button" data-remove-membro="${membro.professor_id}" data-equipe-id="${equipe.id}" aria-label="Remover ${capitalizeWords(membro.usuarios?.nome || 'professor')} da equipe">×</button>
                   </span>
                 `).join('')
               : '<span class="muted">Nenhum membro</span>';
@@ -2224,8 +2397,8 @@
             return `
               <article class="equipe-card" data-equipe-card="${equipe.id}">
                 <div class="equipe-card-header">
-                  <h4>${equipe.nome}</h4>
-                  <span class="equipe-room">${salas.find((s) => s.id === equipe.sala_id)?.nome || equipe.sala_id}</span>
+                  <h4 class="proper-name">${equipe.nome}</h4>
+                  <span class="equipe-room proper-name">${salas.find((s) => s.id === equipe.sala_id)?.nome || equipe.sala_id}</span>
                 </div>
 
                 <div class="equipe-members">${chips}</div>
@@ -2237,18 +2410,7 @@
             `;
           }));
 
-          table.innerHTML = `
-            <div class="equipe-grid">
-              <article class="equipe-card equipe-card-new" data-new-equipe-card>
-                <div class="card-plus">+</div>
-                <strong>Nova equipe</strong>
-                <span>Cadastre uma nova equipe</span>
-              </article>
-              ${cards.join('')}
-            </div>
-          `;
-
-          table.querySelector('[data-new-equipe-card]')?.addEventListener('click', openEquipeForm);
+          table.innerHTML = `<div class="equipe-grid">${cards.join('')}</div>`;
 
           table.querySelectorAll('[data-equipe-card]').forEach((card) => {
             card.addEventListener('click', (event) => {
@@ -2414,8 +2576,8 @@
             return `
               <tr>
                 <td data-label="Domingo">${formatDateBR(escala.data_domingo)}</td>
-                <td data-label="Sala">${salas.find((s) => s.id === escala.sala_id)?.nome || escala.sala_id}</td>
-                <td data-label="Equipe">${equipe?.nome || escala.equipe_id || 'Equipe'} (${responsaveis})</td>
+                <td data-label="Sala" class="proper-name">${salas.find((s) => s.id === escala.sala_id)?.nome || escala.sala_id}</td>
+                <td data-label="Equipe"><span class="proper-name">${equipe?.nome || escala.equipe_id || 'Equipe'}</span> (<span class="proper-name">${responsaveis}</span>)</td>
                 <td data-label="Lição">${escala.numero_licao}</td>
                 <td data-label="Ações" class="actions"><button class="btn-danger" data-delete-escala="${escala.id}">Excluir</button></td>
               </tr>

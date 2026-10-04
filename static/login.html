@@ -6,22 +6,22 @@
     <title>Pequeno Rebanho | Entrar</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Lora:wght@500;600;700&display=swap" rel="stylesheet" />
     <style>
       :root {
-        --bg: #f6f2e8;
-        --bg-deep: #eee6d3;
+        --bg: #f4f2f7;
+        --bg-deep: #eae7ef;
         --surface: #ffffff;
-        --ink: #24211a;
-        --muted: #6f6a5a;
-        --primary: #3b6e5e;
-        --primary-dark: #24463a;
-        --accent: #c98a2c;
-        --border: #e4dcc7;
+        --ink: #251c32;
+        --muted: #706a79;
+        --primary: #3f7563;
+        --primary-dark: #2d5d4e;
+        --accent: #d89b43;
+        --border: #e5e1e9;
         --danger: #b3432b;
         --success: #3f7d5c;
-        --shadow: 0 24px 48px -20px rgba(36, 33, 26, 0.28);
-        --radius: 20px;
+        --shadow: 0 24px 48px -20px rgba(37, 28, 50, 0.24);
+        --radius: 16px;
       }
 
       * { box-sizing: border-box; }
@@ -36,18 +36,19 @@
         display: grid;
         place-items: center;
         padding: 24px;
-        font-family: 'Inter', system-ui, sans-serif;
+        font-family: 'DM Sans', system-ui, sans-serif;
         color: var(--ink);
         background:
-          radial-gradient(1100px 520px at 12% -10%, #e8f0ea 0%, transparent 60%),
-          radial-gradient(900px 500px at 105% 10%, #fbeed6 0%, transparent 55%),
+          linear-gradient(135deg, rgba(52, 35, 70, 0.03) 1px, transparent 1px),
+          linear-gradient(45deg, rgba(52, 35, 70, 0.02) 1px, transparent 1px),
           var(--bg);
+        background-size: 30px 30px;
       }
 
       .shell {
         width: min(100%, 940px);
         display: grid;
-        grid-template-columns: 1.1fr 1fr;
+        grid-template-columns: 1.05fr 1fr;
         background: var(--surface);
         border-radius: var(--radius);
         box-shadow: var(--shadow);
@@ -56,8 +57,7 @@
       }
 
       .side {
-        background:
-          linear-gradient(160deg, var(--primary-dark) 0%, var(--primary) 100%);
+        background: linear-gradient(155deg, #1c102d 0%, #29173d 68%, #211331 100%);
         color: #f4ede0;
         padding: 48px 40px;
         display: flex;
@@ -81,22 +81,18 @@
         z-index: 1;
       }
 
-      .mark {
-        width: 46px;
-        height: 46px;
-        border-radius: 13px;
-        background: rgba(244, 237, 224, 0.14);
-        border: 1px solid rgba(244, 237, 224, 0.35);
-        display: grid;
-        place-items: center;
-        font-family: 'Fraunces', serif;
-        font-weight: 600;
-        font-size: 1.2rem;
+      .brand-logo {
+        display: block;
+        width: 142px;
+        aspect-ratio: 1;
+        object-fit: contain;
+        border-radius: 10px;
         margin-bottom: 28px;
+        box-shadow: 0 14px 28px rgba(8, 2, 18, 0.2);
       }
 
       .side h1 {
-        font-family: 'Fraunces', serif;
+        font-family: 'Lora', Georgia, serif;
         font-weight: 600;
         font-size: clamp(1.7rem, 2.4vw, 2.1rem);
         line-height: 1.15;
@@ -126,8 +122,10 @@
         justify-content: center;
       }
 
+      .form-brand { display: none; }
+
       .form-side h2 {
-        font-family: 'Fraunces', serif;
+        font-family: 'Lora', Georgia, serif;
         font-weight: 600;
         font-size: 1.7rem;
         margin: 0 0 6px;
@@ -160,11 +158,11 @@
       .field input {
         width: 100%;
         padding: 13px 14px;
-        border-radius: 12px;
+        border-radius: 8px;
         border: 1.5px solid var(--border);
         font-size: 0.98rem;
         font-family: inherit;
-        background: #fffdf9;
+        background: #fff;
         color: var(--ink);
         transition: border-color 0.15s ease, box-shadow 0.15s ease;
       }
@@ -172,7 +170,7 @@
       .field input:focus-visible {
         outline: none;
         border-color: var(--primary);
-        box-shadow: 0 0 0 4px rgba(59, 110, 94, 0.14);
+        box-shadow: 0 0 0 3px rgba(63, 117, 99, 0.14);
       }
 
       .password-row {
@@ -198,7 +196,7 @@
 
       button[type="submit"] {
         border: none;
-        border-radius: 12px;
+        border-radius: 8px;
         background: var(--primary);
         color: #fbf7ef;
         padding: 14px 18px;
@@ -238,7 +236,9 @@
       @media (max-width: 760px) {
         .shell { grid-template-columns: 1fr; }
         .side { display: none; }
-        .form-side { padding: 38px 26px; }
+        .form-side { padding: 34px 26px; }
+        .form-brand { display: block; margin-bottom: 26px; }
+        .form-brand img { display: block; width: 104px; aspect-ratio: 1; border-radius: 8px; }
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -250,7 +250,7 @@
     <div class="shell">
       <div class="side">
         <div class="side-top">
-          <div class="mark">PR</div>
+          <img class="brand-logo" src="/static/logo-pequeno-rebanho.png" alt="Pequeno Rebanho" />
           <h1>Cuidar de cada criança começa com uma boa escala.</h1>
           <p>Organize salas, professores e equipes do ministério infantil em um só lugar — e nunca mais perca quem ensina no próximo domingo.</p>
         </div>
@@ -258,6 +258,7 @@
       </div>
 
       <div class="form-side">
+        <div class="form-brand"><img src="/static/logo-pequeno-rebanho.png" alt="Pequeno Rebanho" /></div>
         <h2>Bem-vindo de volta</h2>
         <p class="lead">Entre com seu e-mail e senha para acessar o Pequeno Rebanho.</p>
 

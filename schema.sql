@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS salas (
+    id SERIAL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    livro_nome TEXT NOT NULL,
+    licao_inicial INTEGER NOT NULL DEFAULT 1,
+    licao_limit INTEGER NOT NULL DEFAULT 50,
+    licao_atual INTEGER NOT NULL DEFAULT 1
+);
+
 CREATE TABLE IF NOT EXISTS usuarios (
     id SERIAL PRIMARY KEY,
     nome TEXT NOT NULL,
@@ -8,15 +17,6 @@ CREATE TABLE IF NOT EXISTS usuarios (
     sala_id INTEGER REFERENCES salas(id) ON DELETE SET NULL,
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
     criado_em TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS salas (
-    id SERIAL PRIMARY KEY,
-    nome TEXT NOT NULL,
-    livro_nome TEXT NOT NULL,
-    licao_inicial INTEGER NOT NULL DEFAULT 1,
-    licao_limit INTEGER NOT NULL DEFAULT 50,
-    licao_atual INTEGER NOT NULL DEFAULT 1
 );
 
 CREATE TABLE IF NOT EXISTS duplas (
