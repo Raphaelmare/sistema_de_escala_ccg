@@ -30,12 +30,19 @@ def minha_proxima_escala(current_user=Depends(get_current_user)):
             "mensagem": "Nenhuma escala encontrada. Você não possui uma próxima escala cadastrada no momento. Caso isso esteja incorreto, entre em contato com o administrador.",
         }
 
-    proxima = None
-    for equipe_id in equipe_ids:
-        escalas = get_supabase().table("escalas").select("*").eq("equipe_id", equipe_id).gte("data_domingo", str(date.today())).order("data_domingo").limit(1).execute().data or []
-        if escalas:
-            proxima = escalas[0]
-            break
+    escalas = (
+        get_supabase()
+        .table("escalas")
+        .select("*")
+        .in_("equipe_id", equipe_ids)
+        .gte("data_domingo", str(date.today()))
+        .order("data_domingo")
+        .limit(1)
+        .execute()
+        .data
+        or []
+    )
+    proxima = escalas[0] if escalas else None
 
     if not proxima:
         return {
