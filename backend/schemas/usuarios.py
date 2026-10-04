@@ -17,3 +17,5 @@ class UsuarioUpdate(BaseModel):
     tipo_usuario: str | None = None
     sala_id: int | None = None
     ativo: bool | None = None
+    password: str | None = None
+    senha: str | None = None
